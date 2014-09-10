@@ -19,6 +19,21 @@ class Colors:
         StopClipTriggered = Rgb.RED
         StoppedClip = Rgb.BLACK
 
+    class Zooming:
+        Selected = Rgb.MAGENTA
+        Stopped = Rgb.RED
+        Playing = Rgb.GREEN
+        Empty = Rgb.BLACK
+
+    class Instrument:
+      NoteBase = Rgb.CYAN
+      NoteScale = Rgb.WHITE
+      NoteNotScale = Rgb.BLACK
+      NoteInvalid = Rgb.BLACK
+      Feedback = Rgb.GREEN
+      FeedbackRecord = Rgb.RED
+      NoteAction = Rgb.RED
+
 def make_pad_skin():
   return Skin(Colors)
 

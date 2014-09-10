@@ -8,8 +8,9 @@ from itertools import imap, chain, starmap
 from _Framework.ControlSurface import ControlSurface
 
 from PadModes import PadModes
+from LCDDisplay import LCDDisplay
 
-class BaseControl(ControlSurface):
+class BaseControl(ControlSurface, LCDDisplay):
   __module__ = __name__
   __doc__ = " Better Base controller script by Will Marshall"
   def __init__(self, c_instance):

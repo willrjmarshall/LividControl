@@ -7,13 +7,13 @@ CC assignments and so on
 """
 
 CHANNEL = 0		#main channel (0 - 15)
-BASE_PADS = [60, 61, 62, 63, 64, 65, 66, 67, 52, 
-            53, 54, 55, 56, 57, 58, 59, 44, 
-            45, 46, 47, 48, 49, 50, 51, 36,
-            37, 38, 39, 40, 41, 42, 43]
+BASE_PADS = [[60, 61, 62, 63, 64, 65, 66, 67], 
+            [52, 53, 54, 55, 56, 57, 58, 59], 
+            [44, 45, 46, 47, 48, 49, 50, 51],
+            [36, 37, 38, 39, 40, 41, 42, 43]]
 BASE_TOUCHSTRIPS = [1, 2, 3, 4, 5, 6, 7, 8, 9]		#there are 9 of these
 BASE_TOUCHPADS = [10, 11, 12, 13, 14, 15, 16, 17]
-BASE_BUTTONS = [18, 19, 20, 21, 22, 23, 24, 25]		#there are 16 of these
+BASE_BUTTONS = [18, 19, 20, 21, 22, 23, 24, 25]		#there are 8 of these
 BASE_RUNNERS = [68, 69, 70, 71, 72, 73, 74, 75]
 BASE_LCDS = [34, 35]
 FOLLOW = True		#this sets whether or not the last selected device on a track is selected for editing when you select a new track
@@ -141,7 +141,7 @@ SCALES = 	{'Mod':[0,1,2,3,4,5,6,7,8,9,10,11],
 			'Spanish':[0,1,3,4,5,6,8,10]
 			}
 
-SCALEABBREVS = {'Mod':'E3', 'Session':'-S','Auto':'-A','Chromatic':'12','DrumPad':'-D','Major':'M-','Minor':'m-','Dorian':'II','Mixolydian':'V',
+SCALEABBREVS = {'Mod':'E3', 'Session':'-S','Auto':'-A','Chromatic':'12','DrumPad':'-D','Major':'M-','Minor':'m-','Dorian':'II','Mixolydian':'V-',
 			'Lydian':'IV','Phrygian':'IH','Locrian':'VH','Diminished':'d-','Whole-half':'Wh','Whole Tone':'WT','Minor Blues':'mB',
 			'Minor Pentatonic':'mP','Major Pentatonic':'MP','Harmonic Minor':'mH','Melodic Minor':'mM','Dominant Sus':'D+','Super Locrian':'SL',
 			'Neopolitan Minor':'mN','Neopolitan Major':'MN','Enigmatic Minor':'mE','Enigmatic':'ME','Composite':'Cp','Bebop Locrian':'lB',
@@ -154,6 +154,7 @@ SPLIT_SCALES = []
 
 """It is possible to create a custom list of scales to be used by the script.  For instance, the list below would include major, minor, auto, drumpad, and chromatic scales, in that order."""
 #SCALENAMES = ['Major', 'Minor', 'Auto', 'DrumPad', 'Chromatic']
+SCALENAMES = [scale for scale in sorted(SCALES.iterkeys())]
 
 """This is the default scale used by Auto when something other than a drumrack is detected for the selected track"""
 DEFAULT_AUTO_SCALE = 'Major'
