@@ -20,7 +20,9 @@ class BaseSessionComponent(SessionComponent):
     self.set_rgb_mode(Colors.CLIP_COLOR_TABLE, Colors.RGB_COLOR_TABLE, clip_slots_only=True)
 
   def _create_session_layer(self, matrix):
-    return Layer(clip_launch_buttons=matrix)
+    return Layer(clip_launch_buttons=matrix,
+        scene_bank_up_button = self.pad_modes.utility_buttons[6],
+        scene_bank_down_button = self.pad_modes.utility_buttons[7])
 
   def set_clip_launch_buttons(self, buttons):
       if buttons:

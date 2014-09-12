@@ -44,4 +44,4 @@ class SessionModes(object):
     return self._shifted_matrix
 
   def _with_session(self, button):
-    return ComboElement(button, modifiers=[self.pad_modes._session_button])
+    return ComboElement(button, modifiers=[self.pad_modes.control_surface._session_button])

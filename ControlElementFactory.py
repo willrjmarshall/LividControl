@@ -6,10 +6,8 @@ from BaseButtonElement import BaseButtonElement
 def create_button(note, name, **k):
     return BaseButtonElement(note, name=name, **k)
 
-
 def create_modifier_button(note, name, **k):
     return create_button(note, name, resource_type=PrioritizedResource, **k)
-
 
 @depends(skin=None)
 def create_note_button(note, name, skin = None, **k):
