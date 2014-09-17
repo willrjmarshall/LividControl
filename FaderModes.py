@@ -18,7 +18,9 @@ class FaderModes(ModesComponent):
     self._init_selects()
     self._init_mixer()
     self.add_mode("mixer", [(self._mixer, self._session_volume_layer)])
-    self.add_mode("device", [(self._mixer, self._session_select_layer), self._device_control(), self._detail_control()])
+    self.add_mode("mixer2", [(self._mixer, self._session_volume_layer)])
+    self.add_mode("device", [(self._mixer, self._session_select_layer), LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
+    self.add_mode("mixer3", [(self._mixer, self._session_volume_layer)])
     self.selected_mode = 'mixer'
 
   def _init_faders(self):
@@ -34,7 +36,10 @@ class FaderModes(ModesComponent):
 
   def _detail_control(self):
     self._detail_view_toggler = DetailViewCntrlComponent(is_enabled = False,
-        layer= Layer(device_nav_left_button = self.control_surface.utility_buttons[2], device_nav_right_button = self.control_surface.utility_buttons[3]))
+        layer= Layer(device_nav_left_button = self.control_surface.utility_buttons[4], 
+          device_nav_right_button = self.control_surface.utility_buttons[5]))
+    self._detail_view_toggler.device_nav_right_button._set_color('Alt')
+    self._detail_view_toggler.device_nav_left_button._set_color('Alt')
     return self._detail_view_toggler
 
   def _init_selects(self):

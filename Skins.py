@@ -8,6 +8,7 @@ class Colors:
       On = Rgb.MAGENTA
       Off = Rgb.BLACK
       Pressed = Rgb.GREEN
+      Alt = Rgb.YELLOW
     class Button2:
       On = Rgb.GREEN
       Off = Rgb.BLACK
@@ -16,6 +17,48 @@ class Colors:
       On = Rgb.GREEN
       Off = Rgb.BLACK
       Pressed = Rgb.YELLOW
+
+
+    class DrumGroup:
+      PadSelected = Rgb.CYAN
+      PadSelectedNotSoloed = Rgb.BLUE
+      PadFilled = Rgb.YELLOW
+      PadEmpty = Rgb.WHITE
+      PadMuted = Rgb.RED
+      PadMutedSelected = Rgb.CYAN
+      PadSoloed = Rgb.BLUE
+      PadSoloedSelected = Rgb.BLUE
+      PadInvisible = Rgb.BLACK
+      PadAction = Rgb.RED
+
+
+    class NoteEditor:
+      StepSelected = Rgb.WHITE
+      StepEmpty = Rgb.BLACK
+      StepEmptyBase = Rgb.CYAN
+      StepEmptyScale = Rgb.YELLOW
+      StepDisabled = Rgb.BLACK
+      Playhead = Rgb.RED
+      PlayheadRecord = Rgb.RED
+      QuantizationSelected = Rgb.GREEN
+      QuantizationUnselected = Rgb.YELLOW
+      NoteBase = Rgb.CYAN
+      NoteScale = Rgb.BLUE
+      NoteNotScale = Rgb.MAGENTA
+      NoteInvalid = Rgb.RED
+
+      class Step:
+        Low = Rgb.WHITE
+        High = Rgb.CYAN
+        Full = Rgb.BLUE
+        Muted = Rgb.YELLOW
+
+      class StepEditing:
+        Low = Rgb.GREEN
+        High = Rgb.YELLOW
+        Full = Rgb.RED
+        Muted = Rgb.WHITE
+
     class Session:
       Scene = Rgb.GREEN 
       SceneTriggered = Rgb.GREEN
