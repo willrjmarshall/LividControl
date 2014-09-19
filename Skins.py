@@ -48,7 +48,7 @@ class Colors:
       PlayheadRecord = Rgb.RED
       QuantizationSelected = Rgb.GREEN
       QuantizationUnselected = Rgb.YELLOW
-      NoteBase = Rgb.CYAN
+      NoteBase = Rgb.WHITE
       NoteScale = Rgb.BLUE
       NoteNotScale = Rgb.MAGENTA
       NoteInvalid = Rgb.RED
@@ -87,7 +87,7 @@ class Colors:
       Empty = Rgb.BLACK
 
     class Instrument:
-      NoteBase = Rgb.CYAN
+      NoteBase = Rgb.BLUE
       NoteScale = Rgb.WHITE
       NoteNotScale = Rgb.BLACK
       NoteInvalid = Rgb.BLACK

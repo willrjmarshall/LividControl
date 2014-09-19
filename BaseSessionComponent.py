@@ -3,17 +3,17 @@ from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.Layer import Layer
 from _Framework.ComboElement import ComboElement
 from _Framework.SubjectSlot import subject_slot
+from BaseMessenger import BaseMessenger
 
 from _Tools.re import *
 import Colors
 
-class BaseSessionComponent(SessionComponent):
+class BaseSessionComponent(SessionComponent, BaseMessenger):
   """ A customized session component for the Livid Base 
       Self-initializes to keep things isolated 
   """
 
-  def __init__(self, matrix = None, pad_modes = None, *a, **k):
-    self.pad_modes = pad_modes
+  def __init__(self, matrix = None, *a, **k):
     super(BaseSessionComponent, self).__init__(enable_skinning=True, 
         is_enabled=False, 
         layer = self._create_session_layer(matrix),
@@ -22,9 +22,9 @@ class BaseSessionComponent(SessionComponent):
 
   def _create_session_layer(self, matrix):
     return Layer(clip_launch_buttons=matrix,
-        track_bank_right_button = self.pad_modes.control_surface.with_session(self.pad_modes.utility_buttons[6]),
-        scene_bank_up_button = self.pad_modes.utility_buttons[6],
-        scene_bank_down_button = self.pad_modes.utility_buttons[7])
+        track_bank_right_button = self.control_surface.with_session(self.utility_buttons[6]),
+        scene_bank_up_button = self.utility_buttons[6],
+        scene_bank_down_button = self.utility_buttons[7])
 
   def set_clip_launch_buttons(self, buttons):
       if buttons:

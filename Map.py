@@ -19,6 +19,7 @@ BASE_RUNNERS = [68, 69, 70, 71, 72, 73, 74, 75]
 BASE_LCDS = [34, 35]
 FOLLOW = True		#this sets whether or not the last selected device on a track is selected for editing when you select a new track
 TRACK_BANKING_INCREMENT = 8
+STREAMINGON = (240, 0, 1, 97, 12, 62, 127, 247)
 
 """This variable determines whether or not the script automatically arms an instruments track for recording when it is selected"""
 AUTO_ARM_SELECTED = True

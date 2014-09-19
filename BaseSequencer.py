@@ -5,18 +5,17 @@ from _Framework.ClipCreator import ClipCreator
 from _Framework.SubjectSlot import subject_slot, subject_slot_group
 from Push.PlayheadComponent import PlayheadComponent
 from Push.PlayheadElement import PlayheadElement
-from Push.GridResolution import GridResolution
 from Skins import pad_skin
 from BaseNoteEditorComponent import BaseNoteEditorComponent
+from BaseMessenger import BaseMessenger
 from MatrixMaps import PAD_FEEDBACK_CHANNEL
 
-class BaseSequencerComponent(StepSeqComponent):
+class BaseSequencerComponent(StepSeqComponent, BaseMessenger):
   """ Custom step-sequencer for Drum Pads. Keys are handled via Melodic Step Sequencer. """
 
-  def __init__(self, pad_modes, *a, **k):
-    self.pad_modes = pad_modes
+  def __init__(self, *a, **k):
     super(BaseSequencerComponent, self).__init__(clip_creator = ClipCreator(),
-        grid_resolution = pad_modes._grid,
+        grid_resolution = self.control_surface.grid,
         is_enabled = False,
         skin = pad_skin(),
         *a, **k)
@@ -29,6 +28,7 @@ class BaseSequencerComponent(StepSeqComponent):
   # Set the playhead to use our notes
   # Feedback channel must also be set on ControlSurface
   # Can't be zero, so we're just using 14
+  # TODO refactor to pull from Map.py
   def configure_playhead(self):
     self._playhead_component._notes=tuple(chain(*starmap(range, (
          (64, 68),
@@ -42,6 +42,8 @@ class BaseSequencerComponent(StepSeqComponent):
          (40, 43)))))
 
   def set_button_matrix(self, matrix):
+    """ This method, as with most set_* methods, is called every time
+    This component is enabled """
     self._note_editor_matrix = matrix
     self._update_note_editor_matrix()
     if matrix:
@@ -63,4 +65,3 @@ class BaseSequencerComponent(StepSeqComponent):
 
   def patch_note_editor(self):
     self._note_editor.__class__ = BaseNoteEditorComponent
-    self._note_editor.control_surface = self.pad_modes.control_surface

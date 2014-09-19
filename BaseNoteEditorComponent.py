@@ -6,12 +6,9 @@ from _Framework.Util import sign, product, in_range, clamp, forward_property, fi
 from _Framework import Task, Defaults
 from Push.LoopSelectorComponent import create_clip_in_selected_slot
 from Push.MatrixMaps import PAD_FEEDBACK_CHANNEL
-import inspect
-import traceback
 
 class BaseNoteEditorComponent(NoteEditorComponent):
   """ Monkeypatches NoteEditorComponent to support 4 instead of 8 steps """
-
   def _visible_steps(self):
     first_time = self.page_length * self._page_index
     steps_per_page = self._get_step_count()

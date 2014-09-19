@@ -10,12 +10,12 @@ NUM_SCENES = 4
 
 from BaseButtonElement import BaseButtonElement
 from BaseSessionComponent import BaseSessionComponent
+from BaseMessenger import BaseMessenger
 
-class SessionModes(object):
+class SessionModes(BaseMessenger):
   """ Encapsulates creation of Session and SessionZooming modes """
 
-  def __init__(self, pad_modes):
-    self.pad_modes = pad_modes
+  def __init__(self):
     self._session_mode = LazyComponentMode(self._create_session)
     self._zooming_mode = LazyComponentMode(self._create_zooming) 
 
@@ -25,9 +25,8 @@ class SessionModes(object):
   def _create_session(self):
     """ Lazily evaluated the first time session mode is selected """
     session = BaseSessionComponent(num_tracks = NUM_TRACKS, num_scenes = NUM_SCENES,
-        pad_modes = self.pad_modes,
-        matrix = self.pad_modes.create_matrix())
-    self.pad_modes.control_surface.set_highlighting_session_component(session)
+        matrix = self.control_surface.matrix)
+    self.control_surface.set_highlighting_session_component(session)
     return session
 
   def _create_zooming(self):
@@ -40,8 +39,8 @@ class SessionModes(object):
 
   def _create_shifted_matrix(self):
     self._shifted_matrix = ButtonMatrixElement(name='Shifted_Button_Matrix',
-        rows = recursive_map(self._with_session, self.pad_modes._pads)) 
+        rows = recursive_map(self._with_session, self.control_surface._pads)) 
     return self._shifted_matrix
 
   def _with_session(self, button):
-    return ComboElement(button, modifiers=[self.pad_modes.control_surface._session_button])
+    return ComboElement(button, modifiers=[self.control_surface._session_button])

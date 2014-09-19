@@ -6,12 +6,15 @@ from _Tools.re import *
 from itertools import imap, chain, starmap
 from contextlib import contextmanager
 
+from Push.GridResolution import GridResolution
+
 from _Framework.ControlSurface import OptimizedControlSurface
 from _Framework.ComboElement import ComboElement
 from _Framework.SubjectSlot import subject_slot
 from _Framework.Layer import Layer
 from _Framework.Util import const
 from _Framework.Dependency import inject
+from _Framework.ButtonMatrixElement import ButtonMatrixElement
 
 from MatrixMaps import PAD_TRANSLATIONS, FEEDBACK_CHANNELS
 from ControlElementFactory import create_modifier_button, create_button
@@ -21,11 +24,11 @@ from UtilityModes import UtilityModes
 from LCDDisplay import LCDDisplay
 from PPMeter import PPMeter
 from BaseFaderElement import BaseFaderElement
+from BasePadElement import BasePadElement
 from Map import *
 from Colors import Rgb
 from Skins import button_skin_2, button_skin_1, pad_skin
 
-STREAMINGON = (240, 0, 1, 97, 12, 62, 127, 247)
 
 class BaseControl(OptimizedControlSurface, LCDDisplay):
   __module__ = __name__
@@ -34,13 +37,9 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     super(BaseControl, self).__init__(c_instance)
     self.log_message('BaseControl script open')
     self._utility_buttons = []
-    self._base_injector = inject(
-      control_surface = const(self),
-      log_message = const(self.log_message),
-      utility_buttons = const(self.utility_buttons)
-    ) 
+
     with self.component_guard():
-      self._create_modifier_buttons()
+      self._create_shared_controls()
       self._init_faders()
       self._init_utility()
       self._init_pads()
@@ -52,6 +51,15 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
       self._on_session_record_changed()
       self._suggested_input_port = 'Controls'
       self._suggested_output_port = 'Controls'
+
+  def _create_shared_controls(self):
+      self._create_modifier_buttons()
+      self._create_pads()
+      self._create_matrix()
+      self._create_grid()
+
+  def _create_grid(self):
+    self.grid = self.register_disconnectable(GridResolution())
 
   def reset_controlled_track(self):
     self.set_controlled_track(self.song().view.selected_track)
@@ -68,6 +76,14 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
   @property
   def utility_buttons(self):
     return self._utility_buttons
+
+  def _create_pads(self):
+    self._pads = [ [BasePadElement(pad) for pad in row] for row in BASE_PADS ]
+    self._shifted_pads = [ [self.with_sequencer((pad)) for pad in row] for row in self._pads ]
+
+  def _create_matrix(self):
+    self.matrix = ButtonMatrixElement(name='Button_Matrix', rows = self._pads)
+    self.shifted_matrix = ButtonMatrixElement(name='Button_Matrix', rows = self._shifted_pads)
 
   def _create_modifier_buttons(self):
     for index in range(8):
@@ -113,11 +129,28 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     feedback_color = int(pad_skin()['Instrument.FeedbackRecord'] if status else pad_skin()['Instrument.Feedback'])
     self._c_instance.set_feedback_velocity(feedback_color)
 
+  def with_note(self, button):
+    return ComboElement(button, modifiers=[self._note_button])
+
   def with_session(self, button):
     return ComboElement(button, modifiers=[self._session_button])
+
+  def with_sequencer(self, button):
+    return ComboElement(button, modifiers=[self._sequence_button])
 
   @contextmanager
   def component_guard(self):
     with super(BaseControl, self).component_guard():
-      with self._base_injector.everywhere():
+      with self.make_injector().everywhere():
         yield
+
+  def make_injector(self):
+    return inject(
+      control_surface = const(self),
+      log_message = const(self.log_message),
+      reset_controlled_track = const(self.reset_controlled_track),
+      with_note = const(self.with_note),
+      with_session = const(self.with_session),
+      with_sequencer = const(self.with_sequencer),
+      display_num = const(self.display_num)
+    ) 
