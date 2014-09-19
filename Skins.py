@@ -93,7 +93,7 @@ class Colors:
       NoteInvalid = Rgb.BLACK
       Feedback = Rgb.GREEN
       FeedbackRecord = Rgb.RED
-      NoteAction = Rgb.RED
+      NoteAction = Rgb.YELLOW
 
 def pad_skin():
   return Skin(Colors)

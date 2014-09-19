@@ -66,9 +66,17 @@ _base_translations =  {'0': 0,
 class LCDDisplay(object):
   """ Mixin to provide LCD display """
 
-
   def _display_chars(self, char1=None, char2=None):
     if char1 in _base_translations:
       self._send_midi((176, 34, _base_translations[char1]))
     if char2 in _base_translations:
       self._send_midi((176, 35, _base_translations[char2]))
+
+  def _display_num(self, number):
+    number = str(number)
+    if len(number) == 2:
+      self._send_midi((176, 34, _base_translations[number[0]]))
+      self._send_midi((176, 35, _base_translations[number[1]]))
+    else:
+      self._send_midi((176, 34, _base_translations['-']))
+      self._send_midi((176, 35, _base_translations[number[0]]))

@@ -3,11 +3,9 @@ from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.Layer import Layer
 from _Framework.ComboElement import ComboElement
 from _Framework.SubjectSlot import subject_slot
-from Push.NoteSettingsComponent import NoteEditorSettingsComponent
 from Push.GridResolution import GridResolution
 from Push.PlayheadElement import PlayheadElement
 from Map import * 
-from MatrixMaps import PAD_TRANSLATIONS, FEEDBACK_CHANNELS
 
 from SessionModes import SessionModes
 from BaseMelodicComponent import BaseMelodicComponent

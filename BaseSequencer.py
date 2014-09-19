@@ -24,11 +24,11 @@ class BaseSequencerComponent(StepSeqComponent):
     self.on_selected_track_changed()
     self.patch_note_editor()
     self.configure_playhead()
-
-    self.pad_modes.control_surface.reset_controlled_track()
     self.update()
 
-
+  # Set the playhead to use our notes
+  # Feedback channel must also be set on ControlSurface
+  # Can't be zero, so we're just using 14
   def configure_playhead(self):
     self._playhead_component._notes=tuple(chain(*starmap(range, (
          (64, 68),
@@ -40,7 +40,6 @@ class BaseSequencerComponent(StepSeqComponent):
          (56, 59),
          (48, 51),
          (40, 43)))))
-
 
   def set_button_matrix(self, matrix):
     self._note_editor_matrix = matrix

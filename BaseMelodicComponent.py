@@ -35,9 +35,11 @@ class BaseMelodicComponent(MelodicComponent):
 
   @subject_slot('selected_item')
   def _on_selected_modus(self):
-    modus = str(self._instrument._scales.modus)
-    modus_abbr = list(SCALEABBREVS[modus.replace("_", " ")]) 
-    self.pad_modes.control_surface._display_chars(modus_abbr[0], modus_abbr[1])
+    self.pad_modes.control_surface._display_num(self.modus_index + 1)
+
+  @property
+  def modus_index(self):
+    return self._instrument._scales._modus_list.scrollable_list.selected_item_index
 
   def _with_shift(self, button):
     return ComboElement(button, modifiers=[self.pad_modes.control_surface._note_button])
