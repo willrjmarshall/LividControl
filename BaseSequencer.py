@@ -8,7 +8,7 @@ from Push.PlayheadElement import PlayheadElement
 from Push.GridResolution import GridResolution
 from Skins import pad_skin
 from BaseNoteEditorComponent import BaseNoteEditorComponent
-from Map import BUTTON_CHANNEL
+from MatrixMaps import PAD_FEEDBACK_CHANNEL
 
 class BaseSequencerComponent(StepSeqComponent):
   """ Custom step-sequencer for Drum Pads. Keys are handled via Melodic Step Sequencer. """
@@ -45,8 +45,9 @@ class BaseSequencerComponent(StepSeqComponent):
   def set_button_matrix(self, matrix):
     self._note_editor_matrix = matrix
     self._update_note_editor_matrix()
-    for button, _ in ifilter(first, matrix.iterbuttons()):
-      button.set_channel(BUTTON_CHANNEL)
+    if matrix:
+      for button, _ in ifilter(first, matrix.iterbuttons()):
+        button.set_channel(PAD_FEEDBACK_CHANNEL)
 
   def _setup_drum_group_finder(self):
     self._drum_group_finder = DrumGroupFinderComponent()

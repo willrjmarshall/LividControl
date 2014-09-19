@@ -18,18 +18,17 @@ class Colors:
       Off = Rgb.BLACK
       Pressed = Rgb.YELLOW
 
-
     class DrumGroup:
-      PadSelected = Rgb.RED
-      PadSelectedNotSoloed = Rgb.BLUE
+      PadSelected = Rgb.WHITE
+      PadSelectedNotSoloed = Rgb.CYAN
       PadFilled = Rgb.YELLOW
-      PadEmpty = Rgb.WHITE
+      PadEmpty = Rgb.BLACK
       PadMuted = Rgb.RED
-      PadMutedSelected = Rgb.CYAN
+      PadMutedSelected = Rgb.BLACK
       PadSoloed = Rgb.BLUE
       PadSoloedSelected = Rgb.BLUE
       PadInvisible = Rgb.BLACK
-      PadAction = Rgb.RED
+      PadAction = Rgb.GREEN
 
     class LoopSelector:
       Playhead = Rgb.GREEN
@@ -39,14 +38,13 @@ class Colors:
       InsideLoop = Rgb.WHITE
       OutsideLoop = Rgb.BLACK
 
-
     class NoteEditor:
       StepSelected = Rgb.WHITE
       StepEmpty = Rgb.BLACK
       StepEmptyBase = Rgb.CYAN
       StepEmptyScale = Rgb.YELLOW
       StepDisabled = Rgb.BLACK
-      Playhead = Rgb.RED
+      Playhead = Rgb.GREEN
       PlayheadRecord = Rgb.RED
       QuantizationSelected = Rgb.GREEN
       QuantizationUnselected = Rgb.YELLOW

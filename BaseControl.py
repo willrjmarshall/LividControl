@@ -20,7 +20,6 @@ from PPMeter import PPMeter
 from BaseFaderElement import BaseFaderElement
 from Map import *
 from Skins import button_skin_2, button_skin_1
-from Push.PlayheadElement import PlayheadElement
 
 STREAMINGON = (240, 0, 1, 97, 12, 62, 127, 247)
 
@@ -31,10 +30,6 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     super(BaseControl, self).__init__(c_instance)
     self.log_message('BaseControl script open')
     with self.component_guard():
-      self._playhead = PlayheadElement(self._c_instance.playhead)
-      self._playhead.reset()
-      self._send_midi(STREAMINGON)
-      self._send_midi((191, 122, 64))
       self._create_modifier_buttons()
       self._init_faders()
       self._init_utility()
@@ -53,7 +48,6 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
 
   def update(self):
     super(BaseControl, self).update()
-    self.set_feedback_channels(FEEDBACK_CHANNELS)
     self.reset_controlled_track()
 
 

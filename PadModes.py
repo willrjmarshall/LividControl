@@ -46,11 +46,9 @@ class PadModes(ModesComponent):
     return TrackControl()
 
   def _sequencer_mode(self):
-    self.control_surface.set_feedback_channels(FEEDBACK_CHANNELS)
-    
     self._sequencer = BaseSequencerComponent(self, layer = Layer(
       drum_matrix = self._matrix.submatrix[:4, :4],
-      playhead = self.control_surface._playhead,
+      playhead = self._playhead(),
       select_button = self.control_surface._sequence_button,
       #loop_selector_matrix = self._matrix.submatrix[4:8, :4]))
       button_matrix = self._matrix.submatrix[4:8, :4]))
@@ -60,6 +58,9 @@ class PadModes(ModesComponent):
 
   def _create_pads(self):
     self._pads = [ [BasePadElement(pad) for pad in row] for row in BASE_PADS ]
+  
+  def _playhead(self):
+    return PlayheadElement(self.control_surface._c_instance.playhead)
 
   def create_matrix(self):
     self._matrix = ButtonMatrixElement(name='Button_Matrix', rows = self._pads)
