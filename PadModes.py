@@ -7,6 +7,7 @@ from Push.NoteSettingsComponent import NoteEditorSettingsComponent
 from Push.GridResolution import GridResolution
 from Push.PlayheadElement import PlayheadElement
 from Map import * 
+from MatrixMaps import PAD_TRANSLATIONS, FEEDBACK_CHANNELS
 
 from SessionModes import SessionModes
 from BaseMelodicComponent import BaseMelodicComponent

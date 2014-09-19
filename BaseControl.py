@@ -8,7 +8,7 @@ from itertools import imap, chain, starmap
 from _Framework.ControlSurface import OptimizedControlSurface
 from _Framework.Layer import Layer
 
-from MatrixMaps import PAD_TRANSLATIONS
+from MatrixMaps import PAD_TRANSLATIONS, FEEDBACK_CHANNELS
 
 
 from ControlElementFactory import create_modifier_button, create_button

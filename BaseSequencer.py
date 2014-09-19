@@ -8,7 +8,7 @@ from Push.PlayheadElement import PlayheadElement
 from Push.GridResolution import GridResolution
 from Skins import pad_skin
 from BaseNoteEditorComponent import BaseNoteEditorComponent
-from Map import FEEDBACK_CHANNELS, BUTTON_CHANNEL
+from Map import BUTTON_CHANNEL
 
 class BaseSequencerComponent(StepSeqComponent):
   """ Custom step-sequencer for Drum Pads. Keys are handled via Melodic Step Sequencer. """
