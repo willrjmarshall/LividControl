@@ -7,6 +7,8 @@ CC assignments and so on
 """
 
 CHANNEL = 0		#main channel (0 - 15)
+BUTTON_CHANNEL = 1		
+FEEDBACK_CHANNELS = [1] 
 BASE_PADS = [[60, 61, 62, 63, 64, 65, 66, 67], 
             [52, 53, 54, 55, 56, 57, 58, 59], 
             [44, 45, 46, 47, 48, 49, 50, 51],

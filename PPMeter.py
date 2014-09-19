@@ -11,7 +11,7 @@ MASTER_SCALE_MAX = 0.9
 MASTER_SCALE_MIN = 0.4
 
 class PPMeter(ControlSurfaceComponent):
-  'represents a single PPM with source and target' 
+  'represents a single PPM with Track source and Encoder target' 
 
   def __init__(self, control_surface, track, target):
     super(PPMeter, self).__init__() 
@@ -27,7 +27,7 @@ class PPMeter(ControlSurfaceComponent):
 
   def scale(self, value):
     if (value > MASTER_SCALE_MAX):
-      value =MASTER_SCALE_MAX 
+      value = MASTER_SCALE_MAX 
     elif (value < MASTER_SCALE_MIN):
       value = MASTER_SCALE_MIN 
     value = value - MASTER_SCALE_MIN

@@ -1,4 +1,5 @@
-from itertools import imap, chain, starmap
+from itertools import imap, chain, starmap, izip, ifilter
+from _Framework.Util import find_if, first
 from Push.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
 from _Framework.ClipCreator import ClipCreator
 from _Framework.SubjectSlot import subject_slot, subject_slot_group
@@ -6,9 +7,11 @@ from Push.PlayheadComponent import PlayheadComponent
 from Push.PlayheadElement import PlayheadElement
 from Push.GridResolution import GridResolution
 from Skins import pad_skin
+from BaseNoteEditorComponent import BaseNoteEditorComponent
+from Map import FEEDBACK_CHANNELS, BUTTON_CHANNEL
 
 class BaseSequencerComponent(StepSeqComponent):
-  """ Self-initializing step sequencer """
+  """ Custom step-sequencer for Drum Pads. Keys are handled via Melodic Step Sequencer. """
 
   def __init__(self, pad_modes, *a, **k):
     self.pad_modes = pad_modes
@@ -17,12 +20,35 @@ class BaseSequencerComponent(StepSeqComponent):
         is_enabled = False,
         skin = pad_skin(),
         *a, **k)
-    self.setup_playhead()
-    self.setup_drum_group_finder()
+    self._setup_drum_group_finder()
     self.on_selected_track_changed()
+    self.patch_note_editor()
+    self.configure_playhead()
+
+    self.pad_modes.control_surface.reset_controlled_track()
     self.update()
 
-  def setup_drum_group_finder(self):
+
+  def configure_playhead(self):
+    self._playhead_component._notes=tuple(chain(*starmap(range, (
+         (64, 68),
+         (56, 60),
+         (48, 52),
+         (40, 44)))))
+    self._playhead_component._triplet_notes=tuple(chain(*starmap(range, (
+         (64, 67),
+         (56, 59),
+         (48, 51),
+         (40, 43)))))
+
+
+  def set_button_matrix(self, matrix):
+    self._note_editor_matrix = matrix
+    self._update_note_editor_matrix()
+    for button, _ in ifilter(first, matrix.iterbuttons()):
+      button.set_channel(BUTTON_CHANNEL)
+
+  def _setup_drum_group_finder(self):
     self._drum_group_finder = DrumGroupFinderComponent()
     self._on_drum_group_changed.subject = self._drum_group_finder
     self._drum_group_finder.update()
@@ -31,26 +57,10 @@ class BaseSequencerComponent(StepSeqComponent):
   def _on_drum_group_changed(self):
     self.set_drum_group_device(self._drum_group_finder.drum_group)
 
-  def setup_playhead(self):
-    self._playhead_component = self.register_component(PlayheadComponent(grid_resolution=self.pad_modes._grid, 
-      paginator=self._paginator, 
-      follower=self._loop_selector,
-      notes = range(16),
-      triplet_notes = chain(*starmap(range, ((0, 3), (4, 7), (8, 11), (12, 15))))))
-
-    self.set_playhead(PlayheadElement(self.pad_modes.control_surface._c_instance.playhead))
-    self._playhead.reset()
-
   def on_selected_track_changed(self):
     self.set_drum_group_device(self._drum_group_finder.drum_group)
-    return
+    self.update()
 
-    #self._note_editor._visible_steps = self._visible_steps
-  #def _visible_steps(self):
-		#first_time = self._note_editor.page_length * self._note_editor._page_index
-		#steps_per_page = self._note_editor._get_step_count()
-		#step_length = self._note_editor._get_step_length()
-		#indices = range(steps_per_page)
-		#if self._note_editor._is_triplet_quantization():
-			#indices = filter(lambda k: k % 4 != 3, indices)
-		#return [ (self._note_editor._time_step(first_time + k * step_length), index) for k, index in enumerate(indices) ]
+  def patch_note_editor(self):
+    self._note_editor.__class__ = BaseNoteEditorComponent
+    self._note_editor.control_surface = self.pad_modes.control_surface

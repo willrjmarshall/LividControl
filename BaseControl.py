@@ -5,10 +5,13 @@ import sys
 from _Tools.re import *
 from itertools import imap, chain, starmap
 
-from _Framework.ControlSurface import ControlSurface
+from _Framework.ControlSurface import OptimizedControlSurface
 from _Framework.Layer import Layer
-from ControlElementFactory import create_modifier_button, create_button
 
+from MatrixMaps import PAD_TRANSLATIONS
+
+
+from ControlElementFactory import create_modifier_button, create_button
 from PadModes import PadModes
 from FaderModes import FaderModes
 from UtilityModes import UtilityModes
@@ -17,21 +20,42 @@ from PPMeter import PPMeter
 from BaseFaderElement import BaseFaderElement
 from Map import *
 from Skins import button_skin_2, button_skin_1
+from Push.PlayheadElement import PlayheadElement
 
-class BaseControl(ControlSurface, LCDDisplay):
+STREAMINGON = (240, 0, 1, 97, 12, 62, 127, 247)
+
+class BaseControl(OptimizedControlSurface, LCDDisplay):
   __module__ = __name__
   __doc__ = " Better Base controller script by Will Marshall"
   def __init__(self, c_instance):
     super(BaseControl, self).__init__(c_instance)
     self.log_message('BaseControl script open')
     with self.component_guard():
+      self._playhead = PlayheadElement(self._c_instance.playhead)
+      self._playhead.reset()
+      self._send_midi(STREAMINGON)
+      self._send_midi((191, 122, 64))
       self._create_modifier_buttons()
       self._init_faders()
       self._init_utility()
       self._init_pads()
       self._init_ppm()
-      self._init_switches()
-      self._init_misc() # Light flashing, VU meter on master
+      
+      self.set_pad_translations(PAD_TRANSLATIONS)
+      self.set_feedback_channels(FEEDBACK_CHANNELS)
+
+  def reset_controlled_track(self):
+    self.set_controlled_track(self.song().view.selected_track)
+
+  def _on_selected_track_changed(self):
+    super(BaseControl, self)._on_selected_track_changed()
+    self.reset_controlled_track()
+
+  def update(self):
+    super(BaseControl, self).update()
+    self.set_feedback_channels(FEEDBACK_CHANNELS)
+    self.reset_controlled_track()
+
 
   def _create_modifier_buttons(self):
     self.utility_buttons = []
@@ -68,11 +92,7 @@ class BaseControl(ControlSurface, LCDDisplay):
         note_button = self._note_button,
         device_button = self._device_button,
         sequence_button = self._sequence_button)
-  def _init_switches(self):
-    pass
 
   def _init_ppm(self):
     self._ppm = PPMeter(self, self.song().master_track, self._master_fader)
 
-  def _init_misc(self):
-    pass

@@ -20,7 +20,7 @@ class Colors:
 
 
     class DrumGroup:
-      PadSelected = Rgb.CYAN
+      PadSelected = Rgb.RED
       PadSelectedNotSoloed = Rgb.BLUE
       PadFilled = Rgb.YELLOW
       PadEmpty = Rgb.WHITE
@@ -30,6 +30,14 @@ class Colors:
       PadSoloedSelected = Rgb.BLUE
       PadInvisible = Rgb.BLACK
       PadAction = Rgb.RED
+
+    class LoopSelector:
+      Playhead = Rgb.GREEN
+      PlayheadRecord = Rgb.RED
+      SelectedPage = Rgb.YELLOW
+      InsideLoopStartBar = Rgb.WHITE
+      InsideLoop = Rgb.WHITE
+      OutsideLoop = Rgb.BLACK
 
 
     class NoteEditor:

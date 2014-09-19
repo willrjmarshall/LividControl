@@ -1,8 +1,11 @@
 from _Framework.ModesComponent import ModesComponent, LazyComponentMode
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.Layer import Layer
+from _Framework.ComboElement import ComboElement
 from _Framework.SubjectSlot import subject_slot
+from Push.NoteSettingsComponent import NoteEditorSettingsComponent
 from Push.GridResolution import GridResolution
+from Push.PlayheadElement import PlayheadElement
 from Map import * 
 
 from SessionModes import SessionModes
@@ -11,6 +14,7 @@ from BaseButtonElement import BaseButtonElement
 from BasePadElement import BasePadElement
 from TrackControl import TrackControl
 from BaseSequencer import BaseSequencerComponent
+from BaseDrumGroupComponent import BaseDrumGroupComponent 
 
 class PadModes(ModesComponent):
   """ Switcheds pads between session control, keyboard and sequencer mode """
@@ -41,10 +45,17 @@ class PadModes(ModesComponent):
     return TrackControl()
 
   def _sequencer_mode(self):
-    return BaseSequencerComponent(self, layer = Layer(
+    self.control_surface.set_feedback_channels(FEEDBACK_CHANNELS)
+    
+    self._sequencer = BaseSequencerComponent(self, layer = Layer(
       drum_matrix = self._matrix.submatrix[:4, :4],
+      playhead = self.control_surface._playhead,
       select_button = self.control_surface._sequence_button,
+      #loop_selector_matrix = self._matrix.submatrix[4:8, :4]))
       button_matrix = self._matrix.submatrix[4:8, :4]))
+    self._sequencer._drum_group.__class__ = BaseDrumGroupComponent
+    self._sequencer._drum_group.control_surface = self.control_surface
+    return self._sequencer 
 
   def _create_pads(self):
     self._pads = [ [BasePadElement(pad) for pad in row] for row in BASE_PADS ]
@@ -53,3 +64,6 @@ class PadModes(ModesComponent):
     self._matrix = ButtonMatrixElement(name='Button_Matrix', rows = self._pads)
     return self._matrix
 
+
+  def _with_sequencer(self, button):
+    return ComboElement(button, modifiers=[self.control_surface._sequence_button])
