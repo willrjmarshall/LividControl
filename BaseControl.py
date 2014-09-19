@@ -6,11 +6,13 @@ from _Tools.re import *
 from itertools import imap, chain, starmap
 
 from _Framework.ControlSurface import OptimizedControlSurface
+from _Framework.ComboElement import ComboElement
+from _Framework.SubjectSlot import subject_slot
 from _Framework.Layer import Layer
 
+from Push.PlayheadElement import PlayheadElement
+
 from MatrixMaps import PAD_TRANSLATIONS, FEEDBACK_CHANNELS
-
-
 from ControlElementFactory import create_modifier_button, create_button
 from PadModes import PadModes
 from FaderModes import FaderModes
@@ -19,7 +21,8 @@ from LCDDisplay import LCDDisplay
 from PPMeter import PPMeter
 from BaseFaderElement import BaseFaderElement
 from Map import *
-from Skins import button_skin_2, button_skin_1
+from Colors import Rgb
+from Skins import button_skin_2, button_skin_1, pad_skin
 
 STREAMINGON = (240, 0, 1, 97, 12, 62, 127, 247)
 
@@ -38,6 +41,11 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
       
       self.set_pad_translations(PAD_TRANSLATIONS)
       self.set_feedback_channels(FEEDBACK_CHANNELS)
+      self._on_session_record_changed.subject = self.song()
+      self._on_session_record_changed()
+      self._suggested_input_port = 'Controls'
+      self._suggested_output_port = 'Controls'
+      _show_msg_callback("this might work")
 
   def reset_controlled_track(self):
     self.set_controlled_track(self.song().view.selected_track)
@@ -49,7 +57,7 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
   def update(self):
     super(BaseControl, self).update()
     self.reset_controlled_track()
-
+    self.set_feedback_channels(FEEDBACK_CHANNELS)
 
   def _create_modifier_buttons(self):
     self.utility_buttons = []
@@ -90,3 +98,17 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
   def _init_ppm(self):
     self._ppm = PPMeter(self, self.song().master_track, self._master_fader)
 
+  @subject_slot('session_record')
+  def _on_session_record_changed(self):
+    status = self.song().session_record
+    feedback_color = int(pad_skin()['Instrument.FeedbackRecord'] if status else pad_skin()['Instrument.Feedback'])
+    self._c_instance.set_feedback_velocity(feedback_color)
+
+  def with_session(self, button):
+    return ComboElement(button, modifiers=[self._session_button])
+
+  #def _register_component(self, component):
+    #""" Extended to add log_message and control_surface to every component """
+    #super(BaseControl, self)._register_component(component)
+    #component.log_message = self.log_message
+    #component.control_surface = self

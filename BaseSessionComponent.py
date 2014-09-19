@@ -1,6 +1,7 @@
 from _Framework.SessionComponent import SessionComponent
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.Layer import Layer
+from _Framework.ComboElement import ComboElement
 from _Framework.SubjectSlot import subject_slot
 
 from _Tools.re import *
@@ -21,6 +22,7 @@ class BaseSessionComponent(SessionComponent):
 
   def _create_session_layer(self, matrix):
     return Layer(clip_launch_buttons=matrix,
+        track_bank_right_button = self.pad_modes.control_surface.with_session(self.pad_modes.utility_buttons[6]),
         scene_bank_up_button = self.pad_modes.utility_buttons[6],
         scene_bank_down_button = self.pad_modes.utility_buttons[7])
 
@@ -28,3 +30,4 @@ class BaseSessionComponent(SessionComponent):
       if buttons:
           buttons.reset()
       super(BaseSessionComponent, self).set_clip_launch_buttons(buttons)
+
