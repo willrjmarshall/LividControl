@@ -4,13 +4,14 @@ import math
 import sys
 from _Tools.re import *
 from itertools import imap, chain, starmap
+from contextlib import contextmanager
 
 from _Framework.ControlSurface import OptimizedControlSurface
 from _Framework.ComboElement import ComboElement
 from _Framework.SubjectSlot import subject_slot
 from _Framework.Layer import Layer
-
-from Push.PlayheadElement import PlayheadElement
+from _Framework.Util import const
+from _Framework.Dependency import inject
 
 from MatrixMaps import PAD_TRANSLATIONS, FEEDBACK_CHANNELS
 from ControlElementFactory import create_modifier_button, create_button
@@ -32,6 +33,12 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
   def __init__(self, c_instance):
     super(BaseControl, self).__init__(c_instance)
     self.log_message('BaseControl script open')
+    self._utility_buttons = []
+    self._base_injector = inject(
+      control_surface = const(self),
+      log_message = const(self.log_message),
+      utility_buttons = const(self.utility_buttons)
+    ) 
     with self.component_guard():
       self._create_modifier_buttons()
       self._init_faders()
@@ -45,7 +52,6 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
       self._on_session_record_changed()
       self._suggested_input_port = 'Controls'
       self._suggested_output_port = 'Controls'
-      _show_msg_callback("this might work")
 
   def reset_controlled_track(self):
     self.set_controlled_track(self.song().view.selected_track)
@@ -59,8 +65,11 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     self.reset_controlled_track()
     self.set_feedback_channels(FEEDBACK_CHANNELS)
 
+  @property
+  def utility_buttons(self):
+    return self._utility_buttons
+
   def _create_modifier_buttons(self):
-    self.utility_buttons = []
     for index in range(8):
       if index < 6:
         skin = button_skin_1() 
@@ -74,7 +83,7 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     self._sequence_button = self.utility_buttons[3] 
 
   def _init_pads(self):
-    self._pad_modes = PadModes(self)
+    self._pad_modes = PadModes()
     self._pad_modes.layer = Layer(session_button = self._session_button, 
         note_button = self._note_button,
         track_button = self._device_button,
@@ -107,8 +116,8 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
   def with_session(self, button):
     return ComboElement(button, modifiers=[self._session_button])
 
-  #def _register_component(self, component):
-    #""" Extended to add log_message and control_surface to every component """
-    #super(BaseControl, self)._register_component(component)
-    #component.log_message = self.log_message
-    #component.control_surface = self
+  @contextmanager
+  def component_guard(self):
+    with super(BaseControl, self).component_guard():
+      with self._base_injector.everywhere():
+        yield

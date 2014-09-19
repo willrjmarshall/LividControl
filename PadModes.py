@@ -7,6 +7,7 @@ from _Framework.Dependency import dependency, depends
 from Push.GridResolution import GridResolution
 from Push.PlayheadElement import PlayheadElement
 from Map import * 
+from BaseMessenger import BaseMessenger
 
 from SessionModes import SessionModes
 from BaseMelodicComponent import BaseMelodicComponent
@@ -16,14 +17,12 @@ from TrackControl import TrackControl
 from BaseSequencer import BaseSequencerComponent
 from BaseDrumGroupComponent import BaseDrumGroupComponent 
 
-class PadModes(ModesComponent):
+class PadModes(ModesComponent, BaseMessenger):
   """ Switcheds pads between session control, keyboard and sequencer mode """
-  _log_msg_callback = dependency(log_message=None)
 
-  def __init__(self, control_surface):
+  def __init__(self):
     super(PadModes, self).__init__()
-    self.control_surface = control_surface
-    self.utility_buttons = control_surface.utility_buttons
+    self.utility_buttons
     self._create_pads()
     self._create_grid()
     self.add_mode('session', self._session().modes())
