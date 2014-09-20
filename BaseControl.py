@@ -47,8 +47,10 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
       
       self.set_pad_translations(PAD_TRANSLATIONS)
       self.set_feedback_channels(FEEDBACK_CHANNELS)
+      self._device_selection_follows_track_selection = FOLLOW 
       self._on_session_record_changed.subject = self.song()
       self._on_session_record_changed()
+      self._send_midi(FADER_FEEDBACK_ON)
       self._suggested_input_port = 'Controls'
       self._suggested_output_port = 'Controls'
 
@@ -67,6 +69,17 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
   def _on_selected_track_changed(self):
     super(BaseControl, self)._on_selected_track_changed()
     self.reset_controlled_track()
+    self.schedule_message(1, self.arm_track_if_needed)
+
+  def arm_track_if_needed(self):
+    track = self.song().view.selected_track
+    if track.has_midi_input and not track.arm:
+      self.unarm_tracks()
+      track.arm = 1
+
+  def unarm_tracks(self):
+    for track in self.song().tracks:
+      track.arm = 0
 
   def update(self):
     super(BaseControl, self).update()
@@ -107,7 +120,7 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
 
   def _init_faders(self):
     self._master_fader = BaseFaderElement(BASE_MASTER)
-    self._fader_modes = FaderModes(self)
+    self._fader_modes = FaderModes()
     self._fader_modes.layer = Layer(mixer_button = self._session_button,
         mixer2_button = self._note_button,
         mixer3_button = self._sequence_button,

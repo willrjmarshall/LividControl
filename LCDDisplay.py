@@ -72,6 +72,10 @@ class LCDDisplay(object):
     if char2 in _base_translations:
       self._send_midi((176, 35, _base_translations[char2]))
 
+  def display_char(self, char=None):
+    self._send_midi((176, 34, _base_translations["-"]))
+    self._send_midi((176, 35, _base_translations[char]))
+
   def display_num(self, number):
     number = str(number)
     if len(number) == 2:

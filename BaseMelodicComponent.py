@@ -8,6 +8,8 @@ from BaseInstrumentComponent import BaseInstrumentComponent
 from BaseMessenger import BaseMessenger
 from Map import *
 
+NOTES = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+
 class BaseMelodicComponent(MelodicComponent, BaseMessenger):
   """ Switches between note modes : e.g. instrument, drum pad""" 
 
@@ -20,6 +22,7 @@ class BaseMelodicComponent(MelodicComponent, BaseMessenger):
     self._init_scales()
     self._instrument.__class__ = BaseInstrumentComponent
     self._on_octave_changed.subject = self._instrument._slider._slideable
+    self._on_notes_changed.subject = self._instrument
     self._on_selected_modus.subject = self._instrument.scales._modus_list.scrollable_list
     self.reset_controlled_track()
 
@@ -45,6 +48,15 @@ class BaseMelodicComponent(MelodicComponent, BaseMessenger):
   def _on_octave_changed(self):
     self.display_num(str(self.octave_index + 1))
 
+  @subject_slot('position')
+  def _on_octave_changed(self):
+    self.display_num(str(self.octave_index + 1))
+
+  @subject_slot('position')
+  def _on_notes_changed(self):
+    self.log_message(self.note_index)
+    #self.display_num(str(self.octave_index + 1))
+
   @property
   def modus_index(self):
     return self._instrument._scales._modus_list.scrollable_list.selected_item_index
@@ -52,3 +64,7 @@ class BaseMelodicComponent(MelodicComponent, BaseMessenger):
   @property
   def octave_index(self):
     return int(round(self._instrument._first_note)) / self._instrument.page_length
+
+  @property
+  def note_index(self):
+    return int(round(self._instrument._first_note)) % self._instrument.page_length

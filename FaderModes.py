@@ -7,13 +7,13 @@ from _Framework.Layer import Layer
 from _APC.DetailViewCntrlComponent import DetailViewCntrlComponent
 from BaseFaderElement import BaseFaderElement
 from BaseTouchpadElement import BaseTouchpadElement
+from BaseMessenger import BaseMessenger
 from Map import *
 
-class FaderModes(ModesComponent):
+class FaderModes(ModesComponent, BaseMessenger):
   """ Switches between different fader modes """
-  def __init__(self, control_surface):
+  def __init__(self):
     super(FaderModes, self).__init__()
-    self.control_surface = control_surface
     self._init_faders()
     self._init_selects()
     self._init_mixer()
