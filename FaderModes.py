@@ -5,7 +5,6 @@ from _Framework.ComboElement import ComboElement
 from _Framework.DeviceComponent import DeviceComponent
 from _Framework.Layer import Layer
 from _APC.DetailViewCntrlComponent import DetailViewCntrlComponent
-from BaseFaderElement import BaseFaderElement
 from BaseTouchpadElement import BaseTouchpadElement
 from BaseMessenger import BaseMessenger
 from Map import *
@@ -14,7 +13,6 @@ class FaderModes(ModesComponent, BaseMessenger):
   """ Switches between different fader modes """
   def __init__(self):
     super(FaderModes, self).__init__()
-    self._init_faders()
     self._init_selects()
     self._init_mixer()
     self.add_mode("mixer", [(self._mixer, self._session_volume_layer)])
@@ -23,13 +21,10 @@ class FaderModes(ModesComponent, BaseMessenger):
     self.add_mode("mixer3", [(self._mixer, self._session_volume_layer)])
     self.selected_mode = 'mixer'
 
-  def _init_faders(self):
-    self._faders = ButtonMatrixElement(rows = [[BaseFaderElement(fader) for fader in BASE_TOUCHSTRIPS]])
-
   def _device_control(self):
     self._device_component = DeviceComponent(name = 'Device_Component',
         is_enabled = False,
-        layer = Layer(parameter_controls = self._faders))
+        layer = Layer(parameter_controls = self.control_surface._faders))
     self.control_surface.set_device_component(self._device_component)
     self.control_surface._device_selection_follows_track_selection = True
     return self._device_component
@@ -47,7 +42,7 @@ class FaderModes(ModesComponent, BaseMessenger):
       
   def _init_mixer(self):
     self._mixer = MixerComponent(len(BASE_TOUCHSTRIPS), auto_name = True, is_enabled = True)
-    self._session_volume_layer = Layer(volume_controls = self._faders, track_select_buttons = self._selects, 
+    self._session_volume_layer = Layer(volume_controls = self.control_surface._faders, track_select_buttons = self._selects, 
       shift_button = self.control_surface._session_button, 
       prehear_volume_control = self._with_shift(self.control_surface._master_fader))
     self._session_select_layer = Layer(track_select_buttons = self._selects)

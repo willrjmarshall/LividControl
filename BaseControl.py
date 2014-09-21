@@ -3,7 +3,7 @@ import Live
 import math
 import sys
 from _Tools.re import *
-from itertools import imap, chain, starmap
+from itertools import imap, chain, starmap, ifilter
 from contextlib import contextmanager
 
 from Push.GridResolution import GridResolution
@@ -15,6 +15,7 @@ from _Framework.Layer import Layer
 from _Framework.Util import const
 from _Framework.Dependency import inject
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
+from _Framework.Util import first
 
 from MatrixMaps import PAD_TRANSLATIONS, FEEDBACK_CHANNELS
 from ControlElementFactory import create_modifier_button, create_button
@@ -48,11 +49,12 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
       self.set_pad_translations(PAD_TRANSLATIONS)
       self.set_feedback_channels(FEEDBACK_CHANNELS)
       self._device_selection_follows_track_selection = FOLLOW 
+      self._suggested_input_port = 'Controls'
+      self._suggested_output_port = 'Controls'
+
       self._on_session_record_changed.subject = self.song()
       self._on_session_record_changed()
       self._send_midi(FADER_FEEDBACK_ON)
-      self._suggested_input_port = 'Controls'
-      self._suggested_output_port = 'Controls'
 
   def _create_shared_controls(self):
       self._create_modifier_buttons()
@@ -120,6 +122,8 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
 
   def _init_faders(self):
     self._master_fader = BaseFaderElement(BASE_MASTER)
+    self.fader_elements = [BaseFaderElement(fader) for fader in BASE_TOUCHSTRIPS]
+    self._faders = ButtonMatrixElement(rows = [self.fader_elements])
     self._fader_modes = FaderModes()
     self._fader_modes.layer = Layer(mixer_button = self._session_button,
         mixer2_button = self._note_button,
@@ -165,5 +169,5 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
       with_note = const(self.with_note),
       with_session = const(self.with_session),
       with_sequencer = const(self.with_sequencer),
-      display_num = const(self.display_num)
+      display_num = const(self.display_num),
     ) 
