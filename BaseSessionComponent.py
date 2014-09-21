@@ -19,6 +19,7 @@ class BaseSessionComponent(SessionComponent, BaseMessenger):
         layer = self._create_session_layer(matrix),
         auto_name=True, *a, **k)
     self.set_rgb_mode(Colors.CLIP_COLOR_TABLE, Colors.RGB_COLOR_TABLE, clip_slots_only=True)
+    self.set_mixer(self.control_surface.mixer)
 
   def _create_session_layer(self, matrix):
     return Layer(clip_launch_buttons=matrix,

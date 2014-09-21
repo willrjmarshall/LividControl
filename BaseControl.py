@@ -38,50 +38,36 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     super(BaseControl, self).__init__(c_instance)
     self.log_message('BaseControl script open')
     self._utility_buttons = []
-
     with self.component_guard():
       self._create_shared_controls()
       self._init_faders()
       self._init_utility()
       self._init_pads()
       self._init_ppm()
-      
       self.set_pad_translations(PAD_TRANSLATIONS)
       self.set_feedback_channels(FEEDBACK_CHANNELS)
       self._device_selection_follows_track_selection = FOLLOW 
       self._suggested_input_port = 'Controls'
       self._suggested_output_port = 'Controls'
-
       self._on_session_record_changed.subject = self.song()
       self._on_session_record_changed()
       self._send_midi(FADER_FEEDBACK_ON)
 
+  # CREATE stuff 
   def _create_shared_controls(self):
       self._create_modifier_buttons()
       self._create_pads()
       self._create_matrix()
       self._create_grid()
 
+  def _create_mixer(self):
+    self.mixer = MixerComponent(len(BASE_TOUCHSTRIPS), auto_name = True, is_enabled = True)
+
   def _create_grid(self):
     self.grid = self.register_disconnectable(GridResolution())
 
   def reset_controlled_track(self):
     self.set_controlled_track(self.song().view.selected_track)
-
-  def _on_selected_track_changed(self):
-    super(BaseControl, self)._on_selected_track_changed()
-    self.reset_controlled_track()
-    self.schedule_message(1, self.arm_track_if_needed)
-
-  def arm_track_if_needed(self):
-    track = self.song().view.selected_track
-    if track.has_midi_input and not track.arm:
-      self.unarm_tracks()
-      track.arm = 1
-
-  def unarm_tracks(self):
-    for track in self.song().tracks:
-      track.arm = 0
 
   def update(self):
     super(BaseControl, self).update()
@@ -140,11 +126,27 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
   def _init_ppm(self):
     self._ppm = PPMeter(self, self.song().master_track, self._master_fader)
 
+  # Events and callbacks
+  def _on_selected_track_changed(self):
+    super(BaseControl, self)._on_selected_track_changed()
+    self.reset_controlled_track()
+    self.schedule_message(1, self.arm_track_if_needed)
+
   @subject_slot('session_record')
   def _on_session_record_changed(self):
     status = self.song().session_record
     feedback_color = int(pad_skin()['Instrument.FeedbackRecord'] if status else pad_skin()['Instrument.Feedback'])
     self._c_instance.set_feedback_velocity(feedback_color)
+
+  def arm_track_if_needed(self):
+    track = self.song().view.selected_track
+    if track.has_midi_input and not track.arm:
+      self.unarm_tracks()
+      track.arm = 1
+
+  def unarm_tracks(self):
+    for track in self.song().tracks:
+      track.arm = 0
 
   def with_note(self, button):
     return ComboElement(button, modifiers=[self._note_button])

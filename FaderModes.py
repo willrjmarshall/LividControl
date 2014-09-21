@@ -14,11 +14,11 @@ class FaderModes(ModesComponent, BaseMessenger):
   def __init__(self):
     super(FaderModes, self).__init__()
     self._init_selects()
-    self._init_mixer()
-    self.add_mode("mixer", [(self._mixer, self._session_volume_layer)])
-    self.add_mode("mixer2", [(self._mixer, self._session_volume_layer)])
-    self.add_mode("device", [(self._mixer, self._session_select_layer), LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
-    self.add_mode("mixer3", [(self._mixer, self._session_volume_layer)])
+    self._init_mixer_layer()
+    self.add_mode("mixer", [(self.control_surface.mixer, self._session_volume_layer)])
+    self.add_mode("mixer2", [(self.control_surface.mixer, self._session_volume_layer)])
+    self.add_mode("device", [(self.control_surface.mixer, self._session_select_layer), LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
+    self.add_mode("mixer3", [(self.control_surface.mixer, self._session_volume_layer)])
     self.selected_mode = 'mixer'
 
   def _device_control(self):
@@ -40,8 +40,7 @@ class FaderModes(ModesComponent, BaseMessenger):
   def _init_selects(self):
     self._selects = ButtonMatrixElement(rows = [[BaseTouchpadElement(pad) for pad in BASE_TOUCHPADS]])
       
-  def _init_mixer(self):
-    self._mixer = MixerComponent(len(BASE_TOUCHSTRIPS), auto_name = True, is_enabled = True)
+  def _init_mixer_layer(self):
     self._session_volume_layer = Layer(volume_controls = self.control_surface._faders, track_select_buttons = self._selects, 
       shift_button = self.control_surface._session_button, 
       prehear_volume_control = self._with_shift(self.control_surface._master_fader))

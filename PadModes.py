@@ -14,11 +14,10 @@ from BaseSequencer import BaseSequencerComponent
 from BaseDrumGroupComponent import BaseDrumGroupComponent 
 
 class PadModes(ModesComponent, BaseMessenger):
-  """ Switcheds pads between session control, keyboard and sequencer mode """
+  """ Switcheds pads between session control, keyboard mode, track control mode and sequencer mode """
 
   def __init__(self):
     super(PadModes, self).__init__()
-    self.utility_buttons
     self.add_mode('session', self._session().modes())
     self.add_mode('note', LazyComponentMode(self._note_modes))
     self.add_mode('track', LazyComponentMode(self._track_mode))
