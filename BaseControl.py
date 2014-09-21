@@ -14,6 +14,7 @@ from _Framework.SubjectSlot import subject_slot
 from _Framework.Layer import Layer
 from _Framework.Util import const
 from _Framework.Dependency import inject
+from _Framework.MixerComponent import MixerComponent
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.Util import first
 
@@ -40,10 +41,11 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     self._utility_buttons = []
     with self.component_guard():
       self._create_shared_controls()
+      self._init_mixer()
       self._init_faders()
       self._init_utility()
-      self._init_pads()
       self._init_ppm()
+      self._init_modes()
       self.set_pad_translations(PAD_TRANSLATIONS)
       self.set_feedback_channels(FEEDBACK_CHANNELS)
       self._device_selection_follows_track_selection = FOLLOW 
@@ -60,8 +62,10 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
       self._create_matrix()
       self._create_grid()
 
-  def _create_mixer(self):
+  def _init_mixer(self):
+    self._master_fader = BaseFaderElement(BASE_MASTER)
     self.mixer = MixerComponent(len(BASE_TOUCHSTRIPS), auto_name = True, is_enabled = True)
+    self.mixer.master_strip().layer = Layer(volume_control=self._master_fader)
 
   def _create_grid(self):
     self.grid = self.register_disconnectable(GridResolution())
@@ -99,22 +103,28 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     self._device_button = self.utility_buttons[2] 
     self._sequence_button = self.utility_buttons[3] 
 
-  def _init_pads(self):
+  def _init_faders(self):
+    self.fader_elements = [BaseFaderElement(fader) for fader in BASE_TOUCHSTRIPS]
+    self._faders = ButtonMatrixElement(rows = [self.fader_elements])
+
+  def _init_modes(self):
+    self._init_fader_modes()
+    self._init_pad_modes()
+
+  def _init_fader_modes(self):
+    self._fader_modes = FaderModes()
+    self._fader_modes.layer = Layer(mixer_button = self._session_button,
+        mixer2_button = self._note_button,
+        mixer3_button = self._sequence_button,
+        device_button = self._device_button)
+
+  def _init_pad_modes(self):
     self._pad_modes = PadModes()
     self._pad_modes.layer = Layer(session_button = self._session_button, 
         note_button = self._note_button,
         track_button = self._device_button,
         sequence_button = self._sequence_button)
 
-  def _init_faders(self):
-    self._master_fader = BaseFaderElement(BASE_MASTER)
-    self.fader_elements = [BaseFaderElement(fader) for fader in BASE_TOUCHSTRIPS]
-    self._faders = ButtonMatrixElement(rows = [self.fader_elements])
-    self._fader_modes = FaderModes()
-    self._fader_modes.layer = Layer(mixer_button = self._session_button,
-        mixer2_button = self._note_button,
-        mixer3_button = self._sequence_button,
-        device_button = self._device_button)
 
   def _init_utility(self):
     self._utility_modes = UtilityModes(self)

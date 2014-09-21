@@ -1,4 +1,4 @@
-from _Framework.ModesComponent import ModesComponent, LazyComponentMode
+from _Framework.ModesComponent import AddLayerMode, ModesComponent, LazyComponentMode
 from _Framework.MixerComponent import MixerComponent
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.ComboElement import ComboElement
@@ -45,9 +45,6 @@ class FaderModes(ModesComponent, BaseMessenger):
       shift_button = self.control_surface._session_button, 
       prehear_volume_control = self._with_shift(self.control_surface._master_fader))
     self._session_select_layer = Layer(track_select_buttons = self._selects)
-
-    # TODO change master volume fader color here
-    self._mixer.master_strip().layer = Layer(volume_control=self.control_surface._master_fader)
 
   def _with_shift(self, button):
     return ComboElement(button, modifiers=[self.control_surface._session_button])

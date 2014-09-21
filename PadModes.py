@@ -1,4 +1,4 @@
-from _Framework.ModesComponent import ModesComponent, LazyComponentMode
+from _Framework.ModesComponent import AddLayerMode, ModesComponent, LazyComponentMode
 from _Framework.Layer import Layer
 from _Framework.ComboElement import ComboElement
 from _Framework.SubjectSlot import subject_slot
@@ -9,7 +9,6 @@ from BaseMessenger import BaseMessenger
 
 from SessionModes import SessionModes
 from BaseMelodicComponent import BaseMelodicComponent
-from TrackControl import TrackControl
 from BaseSequencer import BaseSequencerComponent
 from BaseDrumGroupComponent import BaseDrumGroupComponent 
 
@@ -20,7 +19,7 @@ class PadModes(ModesComponent, BaseMessenger):
     super(PadModes, self).__init__()
     self.add_mode('session', self._session().modes())
     self.add_mode('note', LazyComponentMode(self._note_modes))
-    self.add_mode('track', LazyComponentMode(self._track_mode))
+    self.add_mode('track', AddLayerMode(self.control_surface.mixer, self._track_control_layer()))
     self.add_mode('sequence', LazyComponentMode(self._sequencer_mode))
     self.selected_mode = "session"
   
@@ -31,8 +30,11 @@ class PadModes(ModesComponent, BaseMessenger):
   def _note_modes(self):
     return BaseMelodicComponent()
 
-  def _track_mode(self):
-    return TrackControl()
+  def _track_control_layer(self):
+    return Layer(
+      mute_buttons = self.control_surface.matrix.submatrix[:8, :1])
+      #solo = self.control_surface._pads[2],  
+      #arm_buttons = self.control_surface._pads[3])    
 
   def _sequencer_mode(self):
     self._sequencer = BaseSequencerComponent(layer = Layer(
@@ -49,3 +51,5 @@ class PadModes(ModesComponent, BaseMessenger):
 
   def _with_sequencer(self, button):
     return ComboElement(button, modifiers=[self.control_surface._sequence_button])
+
+
