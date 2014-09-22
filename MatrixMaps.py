@@ -1,6 +1,7 @@
 """
 Pad Translations for Drum Rack (pad_x, pad_y, note, channel)
 """
+NOTE_FEEDBACK_CHANNEL = 13
 PAD_FEEDBACK_CHANNEL = 14
 FEEDBACK_CHANNELS = range(5, 15) 
 NON_FEEDBACK_CHANNEL = 15

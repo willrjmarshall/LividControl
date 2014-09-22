@@ -26,7 +26,9 @@ from LCDDisplay import LCDDisplay
 from PPMeter import PPMeter
 from BaseFaderElement import BaseFaderElement
 from BasePadElement import BasePadElement
+from BaseTouchpadElement import BaseTouchpadElement
 from BaseMixerComponent import BaseMixerComponent
+from WrapMatrix import wrap_matrix
 from Map import *
 from Colors import Rgb
 from Skins import button_skin_2, button_skin_1, pad_skin
@@ -42,6 +44,7 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     with self.component_guard():
       self._create_shared_controls()
       self._init_mixer()
+      self._init_selects()
       self._init_faders()
       self._init_utility()
       self._init_ppm()
@@ -66,6 +69,12 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     self._master_fader = BaseFaderElement(BASE_MASTER)
     self.mixer = BaseMixerComponent(len(BASE_TOUCHSTRIPS), auto_name = True, is_enabled = True, invert_mute_feedback = True)
     self.mixer.master_strip().layer = Layer(volume_control=self._master_fader)
+
+  def _init_selects(self):
+    selects = [BaseTouchpadElement(pad) for pad in BASE_TOUCHPADS]
+    selects_with_session = [self.with_session(pad) for pad in selects]
+    self.selects = wrap_matrix(selects) 
+    self.selects_with_session = wrap_matrix(selects_with_session)
 
   def _create_grid(self):
     self.grid = self.register_disconnectable(GridResolution())
@@ -124,7 +133,6 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
         note_button = self._note_button,
         track_button = self._device_button,
         sequence_button = self._sequence_button)
-
 
   def _init_utility(self):
     self._utility_modes = UtilityModes(self)

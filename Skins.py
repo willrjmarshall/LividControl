@@ -4,6 +4,8 @@ from Push.Colors import Pulse, Blink
 from Colors import Rgb
 
 class Colors:
+    On = Rgb.GREEN
+    Off = Rgb.BLACK
     class Button:
       On = Rgb.MAGENTA
       Off = Rgb.BLACK
@@ -109,5 +111,5 @@ def button_skin_1():
 def button_skin_2():
   return Skin(Colors.Button2)
 
-def touchpad_skin():
-  return Skin(Colors.Touchpad)
+#def touchpad_skin():
+  #return Skin(Colors.Touchpad)

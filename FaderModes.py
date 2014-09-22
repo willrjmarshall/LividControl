@@ -13,7 +13,6 @@ class FaderModes(ModesComponent, BaseMessenger):
   """ Switches between different fader modes """
   def __init__(self):
     super(FaderModes, self).__init__()
-    self._init_selects()
     self._init_mixer_layer()
     self.add_mode("mixer", [(self.control_surface.mixer, self._session_volume_layer)])
     self.add_mode("mixer2", [(self.control_surface.mixer, self._session_volume_layer)])
@@ -37,15 +36,12 @@ class FaderModes(ModesComponent, BaseMessenger):
     self._detail_view_toggler.device_nav_right_button._set_color('Alt')
     self._detail_view_toggler.device_nav_left_button._set_color('Alt')
     return self._detail_view_toggler
-
-  def _init_selects(self):
-    self._selects = ButtonMatrixElement(rows = [[BaseTouchpadElement(pad) for pad in BASE_TOUCHPADS]])
       
   def _init_mixer_layer(self):
-    self._session_volume_layer = Layer(volume_controls = self.control_surface._faders, track_select_buttons = self._selects, 
+    self._session_volume_layer = Layer(volume_controls = self.control_surface._faders, track_select_buttons = self.control_surface.selects, 
       shift_button = self.control_surface._session_button, 
       prehear_volume_control = self._with_shift(self.control_surface._master_fader))
-    self._session_select_layer = Layer(track_select_buttons = self._selects)
+    self._session_select_layer = Layer(track_select_buttons = self.control_surface.selects)
 
   def _with_shift(self, button):
     return ComboElement(button, modifiers=[self.control_surface._session_button])

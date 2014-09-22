@@ -8,6 +8,7 @@ from BaseMessenger import BaseMessenger
 from _Tools.re import *
 import Colors
 
+
 class BaseSessionComponent(SessionComponent, BaseMessenger):
   """ A customized session component for the Livid Base 
       Self-initializes to keep things isolated 
@@ -20,15 +21,20 @@ class BaseSessionComponent(SessionComponent, BaseMessenger):
         auto_name=True, *a, **k)
     self.set_rgb_mode(Colors.CLIP_COLOR_TABLE, Colors.RGB_COLOR_TABLE, clip_slots_only=True)
     self.set_mixer(self.control_surface.mixer)
+    self.log_message("The value: " + str(self._stop_clip_triggered_value))
+    self.log_message("The other value: " + str(self._stop_clip_value))
 
   def _create_session_layer(self, matrix):
     return Layer(clip_launch_buttons=matrix,
         track_bank_right_button = self.control_surface.with_session(self.utility_buttons[6]),
+        track_bank_left_button = self.control_surface.with_session(self.utility_buttons[7]),
+        stop_track_clip_buttons = self.control_surface.selects_with_session,
         scene_bank_up_button = self.utility_buttons[6],
         scene_bank_down_button = self.utility_buttons[7])
 
   def set_clip_launch_buttons(self, buttons):
-      if buttons:
-          buttons.reset()
-      super(BaseSessionComponent, self).set_clip_launch_buttons(buttons)
-
+    """ Since we use the matrix as a keyboard, which changes note/channel
+    We must reset """
+    if buttons:
+        buttons.reset()
+    super(BaseSessionComponent, self).set_clip_launch_buttons(buttons)
