@@ -31,7 +31,7 @@ from BaseMixerComponent import BaseMixerComponent
 from WrapMatrix import wrap_matrix
 from Map import *
 from Colors import Rgb
-from Skins import button_skin_2, button_skin_1, pad_skin
+from Skins import pad_skin, button_skin, white_button_skin
 
 
 class BaseControl(OptimizedControlSurface, LCDDisplay):
@@ -100,13 +100,13 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
     self.shifted_matrix = ButtonMatrixElement(name='Button_Matrix', rows = self._shifted_pads)
 
   def _create_modifier_buttons(self):
+    self.utility_button_lights = []
     for index in range(8):
-      if index < 6:
-        skin = button_skin_1() 
-      else:
-        skin = button_skin_2() 
       self.utility_buttons.append(create_modifier_button(BASE_BUTTONS[index], "BUTTON_" + str(index + 1),
-        skin = skin))
+        skin = button_skin(index)))
+      self.utility_button_lights.append(create_button(BASE_BUTTON_LIGHTS[index], 
+        "BUTTON_LIGHT_" + str(index + 1),
+        skin = white_button_skin()))
     self._session_button = self.utility_buttons[0]
     self._note_button = self.utility_buttons[1] 
     self._device_button = self.utility_buttons[2] 

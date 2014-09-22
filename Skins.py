@@ -6,11 +6,13 @@ from Colors import Rgb
 class Colors:
     On = Rgb.GREEN
     Off = Rgb.BLACK
+
     class Button:
       On = Rgb.MAGENTA
       Off = Rgb.BLACK
       Pressed = Rgb.GREEN
       Alt = Rgb.YELLOW
+
     class Button2:
       On = Rgb.GREEN
       Off = Rgb.BLACK
@@ -105,11 +107,25 @@ class Colors:
 def pad_skin():
   return Skin(Colors)
 
-def button_skin_1():
-  return Skin(Colors.Button)
+def button_skin(index):
+  class Button:
+    On = mode_colors[index]
+    Off = mode_colors[index]
+  return Skin(Button)
 
-def button_skin_2():
-  return Skin(Colors.Button2)
+def white_button_skin():
+  class Button:
+    On = Rgb.WHITE
+    Off = Rgb.BLACK
+  return Skin(Button)
 
-#def touchpad_skin():
-  #return Skin(Colors.Touchpad)
+mode_colors = [
+  Rgb.MAGENTA,
+  Rgb.BLUE,
+  Rgb.YELLOW,
+  Rgb.RED,
+  Rgb.CYAN,
+  Rgb.CYAN,
+  Rgb.GREEN,
+  Rgb.GREEN
+]
