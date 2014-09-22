@@ -1,11 +1,12 @@
 from _Framework.InputControlElement import MIDI_NOTE_TYPE
 from Push.ConfigurableButtonElement import ConfigurableButtonElement
+from BaseMessenger import BaseMessenger
 from _Framework.Skin import Skin
 from Skins import button_skin_1, Colors
 from Colors import Rgb
 from Map import * 
 
-class BaseButtonElement(ConfigurableButtonElement):
+class BaseButtonElement(ConfigurableButtonElement, BaseMessenger):
   """ Custom self-initing button element for Livid Base """
 
   default_states = {True: 'On',

@@ -2,6 +2,7 @@ from BaseButtonElement import BaseButtonElement
 from _Framework.InputControlElement import MIDI_NOTE_TYPE
 from Skins import pad_skin, Colors
 from Map import CHANNEL 
+import inspect
 
 class BasePadElement(BaseButtonElement):
   """ Custom self-initing pad element for Livid Base """

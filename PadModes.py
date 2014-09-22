@@ -4,6 +4,10 @@ from _Framework.ComboElement import ComboElement
 from _Framework.SubjectSlot import subject_slot
 from _Framework.Dependency import dependency, depends
 from Push.PlayheadElement import PlayheadElement
+
+from itertools import imap, ifilter
+from _Framework.Util import find_if, first
+
 from Map import * 
 from BaseMessenger import BaseMessenger
 
@@ -20,7 +24,7 @@ class PadModes(ModesComponent, BaseMessenger):
     self.add_mode('session', self._session().modes())
     self.add_mode('note', LazyComponentMode(self._note_modes))
     self.add_mode('track', AddLayerMode(self.control_surface.mixer, self._track_control_layer()))
-    self.add_mode('sequence', LazyComponentMode(self._sequencer_mode))
+    self.add_mode('sequence', LazyComponentMode(self._init_sequencer))
     self.selected_mode = "session"
   
   def _session(self):
@@ -32,11 +36,11 @@ class PadModes(ModesComponent, BaseMessenger):
 
   def _track_control_layer(self):
     return Layer(
-      mute_buttons = self.control_surface.matrix.submatrix[:8, :1])
-      #solo = self.control_surface._pads[2],  
-      #arm_buttons = self.control_surface._pads[3])    
+      mute_buttons = self.control_surface.matrix.submatrix[:8, :1],
+      solo_buttons = self.control_surface.matrix.submatrix[:8, 1:2],
+      arm_buttons = self.control_surface.matrix.submatrix[:8, 2:3])
 
-  def _sequencer_mode(self):
+  def _init_sequencer(self):
     self._sequencer = BaseSequencerComponent(layer = Layer(
       drum_matrix = self.control_surface.matrix.submatrix[:4, :4],
       playhead = self._playhead(),

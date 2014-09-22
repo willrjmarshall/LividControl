@@ -14,7 +14,6 @@ from _Framework.SubjectSlot import subject_slot
 from _Framework.Layer import Layer
 from _Framework.Util import const
 from _Framework.Dependency import inject
-from _Framework.MixerComponent import MixerComponent
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.Util import first
 
@@ -27,6 +26,7 @@ from LCDDisplay import LCDDisplay
 from PPMeter import PPMeter
 from BaseFaderElement import BaseFaderElement
 from BasePadElement import BasePadElement
+from BaseMixerComponent import BaseMixerComponent
 from Map import *
 from Colors import Rgb
 from Skins import button_skin_2, button_skin_1, pad_skin
@@ -64,7 +64,7 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
 
   def _init_mixer(self):
     self._master_fader = BaseFaderElement(BASE_MASTER)
-    self.mixer = MixerComponent(len(BASE_TOUCHSTRIPS), auto_name = True, is_enabled = True)
+    self.mixer = BaseMixerComponent(len(BASE_TOUCHSTRIPS), auto_name = True, is_enabled = True, invert_mute_feedback = True)
     self.mixer.master_strip().layer = Layer(volume_control=self._master_fader)
 
   def _create_grid(self):

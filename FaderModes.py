@@ -17,7 +17,8 @@ class FaderModes(ModesComponent, BaseMessenger):
     self._init_mixer_layer()
     self.add_mode("mixer", [(self.control_surface.mixer, self._session_volume_layer)])
     self.add_mode("mixer2", [(self.control_surface.mixer, self._session_volume_layer)])
-    self.add_mode("device", [(self.control_surface.mixer, self._session_select_layer), LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
+    self.add_mode("device", [(self.control_surface.mixer, self._session_select_layer), 
+      LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
     self.add_mode("mixer3", [(self.control_surface.mixer, self._session_volume_layer)])
     self.selected_mode = 'mixer'
 

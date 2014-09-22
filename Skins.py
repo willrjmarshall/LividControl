@@ -18,6 +18,11 @@ class Colors:
       Off = Rgb.BLACK
       Pressed = Rgb.YELLOW
 
+    class MixerButton:
+      Solo = Rgb.CYAN
+      Mute = Rgb.GREEN
+      Arm = Rgb.RED
+
     class DrumGroup:
       PadSelected = Rgb.WHITE
       PadSelectedNotSoloed = Rgb.CYAN
