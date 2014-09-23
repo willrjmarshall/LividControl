@@ -2,10 +2,10 @@ from _Framework.ModesComponent import AddLayerMode, ModesComponent, LazyComponen
 from _Framework.MixerComponent import MixerComponent
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.ComboElement import ComboElement
-from _Framework.DeviceComponent import DeviceComponent
 from _Framework.Layer import Layer
 from _APC.DetailViewCntrlComponent import DetailViewCntrlComponent
 from BaseTouchpadElement import BaseTouchpadElement
+from BaseDeviceComponent import BaseDeviceComponent
 from BaseMessenger import BaseMessenger
 from Map import *
 
@@ -14,17 +14,27 @@ class FaderModes(ModesComponent, BaseMessenger):
   def __init__(self):
     super(FaderModes, self).__init__()
     self._init_mixer_layer()
-    self.add_mode("session", [(self.control_surface.mixer, self._session_volume_layer)])
-    self.add_mode("note", [(self.control_surface.mixer, self._session_select_layer), 
-      LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
-    self.add_mode("track", [(self.control_surface.mixer, self._session_select_layer), 
-      LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
-    self.add_mode("sequencer", [(self.control_surface.mixer, self._session_select_layer), 
-      LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
-    self.selected_mode = 'mixer'
+    self.add_mode("session", self._mixer_mode())
+    self.add_mode("note", [self._simple_mixer_mode(), self._device_mode()])
+    self.add_mode("track", [self._simple_mixer_mode(), self._device_mode()])
+    self.add_mode("sequencer", [self._simple_mixer_mode(), self._device_mode()])
+    self.selected_mode = 'session'
+
+  def _mixer_mode(self):
+    """ Full mixer including volume layer """
+    return (self.control_surface.mixer, self._session_volume_layer)
+  
+  def _simple_mixer_mode(self):
+    """ Simplified mixer with just selects """
+    return (self.control_surface.mixer, self._session_select_layer)
+
+  def _device_mode(self):
+    """ Device control and sundries """
+    return [LazyComponentMode(self._device_control), 
+           LazyComponentMode(self._detail_control)]
 
   def _device_control(self):
-    self._device_component = DeviceComponent(name = 'Device_Component',
+    self._device_component = BaseDeviceComponent(name = 'Device_Component',
         is_enabled = False,
         layer = Layer(parameter_controls = self.control_surface._faders))
     self.control_surface.set_device_component(self._device_component)
@@ -41,8 +51,7 @@ class FaderModes(ModesComponent, BaseMessenger):
       
   def _init_mixer_layer(self):
     self._session_volume_layer = Layer(
-        user_controls = self.control_surface._faders,
-        #volume_controls = self.control_surface._faders, 
+        volume_controls = self.control_surface._faders, 
         track_select_buttons = self.control_surface.selects, 
       shift_button = self.control_surface._session_button, 
       prehear_volume_control = self._with_shift(self.control_surface._master_fader))

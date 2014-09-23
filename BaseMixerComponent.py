@@ -8,11 +8,14 @@ class BaseMixerComponent(MixerComponent, BaseMessenger):
   def _create_strip(self):
     return BaseChannelStripComponent()
 
-  def set_user_controls(self, controls):
-    self._user_controls = controls
-    self._update_user_controls
+  def set_volume_controls(self, controls):
+    super(BaseMixerComponent, self).set_volume_controls(controls)
+    self._volume_controls = controls
+    self._update_volume_controls()
 
-  def _update_user_controls(self):
-      set_channel(self._user_controls, 1)
+  #def update(self):
+    #super(BaseMixerComponent, self).update()
 
+  def _update_volume_controls(self):
+      set_channel(self._volume_controls, 1)
 
