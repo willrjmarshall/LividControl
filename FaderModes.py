@@ -32,15 +32,18 @@ class FaderModes(ModesComponent, BaseMessenger):
     return self._device_component
 
   def _detail_control(self):
-    self._detail_view_toggler = DetailViewCntrlComponent(is_enabled = False,
+    toggler = DetailViewCntrlComponent(is_enabled = False,
         layer= Layer(device_nav_left_button = self.control_surface.utility_buttons[4], 
           device_nav_right_button = self.control_surface.utility_buttons[5]))
-    self._detail_view_toggler.device_nav_right_button._set_color('Alt')
-    self._detail_view_toggler.device_nav_left_button._set_color('Alt')
-    return self._detail_view_toggler
+    toggler.device_nav_right_button._set_color('Alt')
+    toggler.device_nav_left_button._set_color('Alt')
+    return toggler 
       
   def _init_mixer_layer(self):
-    self._session_volume_layer = Layer(volume_controls = self.control_surface._faders, track_select_buttons = self.control_surface.selects, 
+    self._session_volume_layer = Layer(
+        user_controls = self.control_surface._faders,
+        #volume_controls = self.control_surface._faders, 
+        track_select_buttons = self.control_surface.selects, 
       shift_button = self.control_surface._session_button, 
       prehear_volume_control = self._with_shift(self.control_surface._master_fader))
     self._session_select_layer = Layer(track_select_buttons = self.control_surface.selects)

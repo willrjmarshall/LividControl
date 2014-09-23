@@ -29,7 +29,7 @@ from BaseFaderElement import BaseFaderElement
 from BasePadElement import BasePadElement
 from BaseTouchpadElement import BaseTouchpadElement
 from BaseMixerComponent import BaseMixerComponent
-from WrapMatrix import wrap_matrix
+from Utilities import wrap_matrix
 from Map import *
 from Colors import Rgb
 from Skins import pad_skin, button_skin, white_button_skin
@@ -104,11 +104,14 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
   def _create_modifier_buttons(self):
     self.utility_button_lights = []
     for index in range(8):
-      self.utility_buttons.append(create_modifier_button(BASE_BUTTONS[index], "BUTTON_" + str(index + 1),
-        skin = button_skin(index)))
-      self.utility_button_lights.append(create_button(BASE_BUTTON_LIGHTS[index], 
-        "BUTTON_LIGHT_" + str(index + 1),
-        skin = white_button_skin()))
+      self.utility_buttons.append(
+        create_modifier_button(BASE_BUTTONS[index], 
+          "BUTTON_" + str(index + 1),
+          skin = button_skin(index)))
+      self.utility_button_lights.append(
+        create_button(BASE_BUTTON_LIGHTS[index], 
+          "BUTTON_LIGHT_" + str(index + 1),
+          skin = white_button_skin()))
     self._session_button = self.utility_buttons[0]
     self._note_button = self.utility_buttons[1] 
     self._device_button = self.utility_buttons[2] 
@@ -174,11 +177,13 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
 
   @contextmanager
   def component_guard(self):
+    """ Customized to inject additional things """
     with super(BaseControl, self).component_guard():
       with self.make_injector().everywhere():
         yield
 
   def make_injector(self):
+    """ Adds some additional stuff to the injector, used in BaseMessenger """
     return inject(
       control_surface = const(self),
       log_message = const(self.log_message),
