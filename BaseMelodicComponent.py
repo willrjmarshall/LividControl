@@ -36,6 +36,15 @@ class BaseMelodicComponent(MelodicComponent, BaseMessenger):
   def _init_scales(self):
     # Auto-enable the scales component and assign the modus buttons
     self._instrument._scales_menu.selected_mode = 'enabled'
+
+    # Manually set the colors for the modus up/down ButtonControls using the Alts from our skin
+    # This is easier than doing lots of subclassing
+    scroller = self._instrument.scales._modus_list._scroller 
+    scroller.scroll_up_button.color = "Alt" 
+    scroller.scroll_down_button.color = "Alt" 
+    scroller.scroll_up_button.disabled_color = "Alt" 
+    scroller.scroll_down_button.disabled_color = "Alt" 
+
     self._instrument.scales.layer = Layer(modus_up_button = self.with_note(self.utility_buttons[7]),
         modus_down_button = self.with_note(self.utility_buttons[6]))
     # Bind _on_selected_modus to changes in scrollable list
@@ -54,8 +63,7 @@ class BaseMelodicComponent(MelodicComponent, BaseMessenger):
 
   @subject_slot('position')
   def _on_notes_changed(self):
-    self.log_message(self.note_index)
-    #self.display_num(str(self.octave_index + 1))
+    self.display_num(str(self.note_index + 1))
 
   @property
   def modus_index(self):

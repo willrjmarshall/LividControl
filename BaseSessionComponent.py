@@ -21,8 +21,8 @@ class BaseSessionComponent(SessionComponent, BaseMessenger):
         auto_name=True, *a, **k)
     self.set_rgb_mode(Colors.CLIP_COLOR_TABLE, Colors.RGB_COLOR_TABLE, clip_slots_only=True)
     self.set_mixer(self.control_surface.mixer)
-    self.log_message("The value: " + str(self._stop_clip_triggered_value))
-    self.log_message("The other value: " + str(self._stop_clip_value))
+    self.set_offsets(0, 2)
+
 
   def _create_session_layer(self, matrix):
     return Layer(clip_launch_buttons=matrix,

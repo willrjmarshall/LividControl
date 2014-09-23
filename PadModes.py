@@ -10,7 +10,6 @@ from _Framework.Util import find_if, first
 
 from Map import * 
 from BaseMessenger import BaseMessenger
-
 from SessionModes import SessionModes
 from BaseMelodicComponent import BaseMelodicComponent
 from BaseSequencer import BaseSequencerComponent
@@ -21,15 +20,15 @@ class PadModes(ModesComponent, BaseMessenger):
 
   def __init__(self):
     super(PadModes, self).__init__()
-    self.add_mode('session', self._session().modes())
+    self._init_session()
+    self.add_mode('session', self._session_modes.modes())
     self.add_mode('note', LazyComponentMode(self._note_modes))
     self.add_mode('track', AddLayerMode(self.control_surface.mixer, self._track_control_layer()))
-    self.add_mode('sequence', LazyComponentMode(self._init_sequencer))
+    self.add_mode('sequencer', LazyComponentMode(self._init_sequencer))
     self.selected_mode = "session"
   
-  def _session(self):
+  def _init_session(self):
     self._session_modes = SessionModes()
-    return self._session_modes
 
   def _note_modes(self):
     return BaseMelodicComponent()
@@ -44,7 +43,10 @@ class PadModes(ModesComponent, BaseMessenger):
     self._sequencer = BaseSequencerComponent(layer = Layer(
       drum_matrix = self.control_surface.matrix.submatrix[:4, :4],
       playhead = self._playhead(),
-      select_button = self.control_surface._sequence_button,
+      drum_bank_up_button = self.control_surface.utility_buttons[4],
+      drum_bank_down_button = self.control_surface.utility_buttons[5],
+      mute_button = self.control_surface.utility_buttons[6],
+      delete_button = self.control_surface.utility_buttons[7],
       loop_selector_matrix = self.control_surface.shifted_matrix.submatrix[4:8, :4],
       button_matrix = self.control_surface.matrix.submatrix[4:8, :4]))
     self._sequencer._drum_group.__class__ = BaseDrumGroupComponent
@@ -52,8 +54,3 @@ class PadModes(ModesComponent, BaseMessenger):
 
   def _playhead(self):
     return PlayheadElement(self.control_surface._c_instance.playhead)
-
-  def _with_sequencer(self, button):
-    return ComboElement(button, modifiers=[self.control_surface._sequence_button])
-
-

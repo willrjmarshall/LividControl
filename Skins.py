@@ -42,9 +42,9 @@ class Colors:
     class LoopSelector:
       Playhead = Rgb.GREEN
       PlayheadRecord = Rgb.RED
-      SelectedPage = Rgb.YELLOW
+      SelectedPage = Rgb.MAGENTA
       InsideLoopStartBar = Rgb.WHITE
-      InsideLoop = Rgb.WHITE
+      InsideLoop = Rgb.YELLOW
       OutsideLoop = Rgb.BLACK
 
     class NoteEditor:
@@ -111,6 +111,7 @@ def button_skin(index):
   class Button:
     On = mode_colors[index]
     Off = mode_colors[index]
+    Alt = Rgb.YELLOW
   return Skin(Button)
 
 def white_button_skin():

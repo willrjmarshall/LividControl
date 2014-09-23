@@ -15,8 +15,8 @@ class UtilityModes(ModesComponent, BaseMessenger):
     super(UtilityModes, self).__init__()
     self.add_mode("session", LazyComponentMode(self._transport))
     self.add_mode("note", [])
-    self.add_mode("device", [])
-    self.add_mode("sequence", [])
+    self.add_mode("track", [])
+    self.add_mode("sequencer", [])
     self._on_selected_mode.subject = self
     self.selected_mode = "session"
 
@@ -26,11 +26,33 @@ class UtilityModes(ModesComponent, BaseMessenger):
 
   @subject_slot('selected_mode')
   def _on_selected_mode(self, mode):
-    """ Light the additional LED on the selected mode
-    and change the fader colors """
     mode_index = self._mode_list.index(mode)
+    self._theme_faders(mode_index)
+    self._indicate_mode(mode_index)
+    self._select_track_if_needed(mode)
+
+  def _select_track_if_needed(self, mode):
+    if mode == "note":
+      self._select_track_by_name("Instrument")
+    elif mode == "sequencer":
+      self._select_track_by_name("Drums")
+
+  def _select_track_by_name(self, name):
+    for track in self.song().tracks:
+      if track.name == name:
+        self.song().view.selected_track = track
+        break
+
+  def _indicate_mode(self, mode_index):
+    """ Light the auxiliary (right) LED on the current mode's button """
     for led in self.control_surface.utility_button_lights:
       led.turn_off()
-    for index, fader in enumerate(self.control_surface.fader_elements):
-      fader.set_theme(mode_colors[mode_index] , "fill")
     self.control_surface.utility_button_lights[mode_index].turn_on()
+
+  def _theme_faders(self, mode_index):
+    """ Change the fader colors to indicate mode """
+    for index, fader in enumerate(self.control_surface.fader_elements):
+      if index < 3:
+        fader.set_theme(mode_colors[mode_index], "spread")
+      else:
+        fader.set_theme(mode_colors[mode_index], "fill")

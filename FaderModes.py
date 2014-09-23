@@ -14,11 +14,13 @@ class FaderModes(ModesComponent, BaseMessenger):
   def __init__(self):
     super(FaderModes, self).__init__()
     self._init_mixer_layer()
-    self.add_mode("mixer", [(self.control_surface.mixer, self._session_volume_layer)])
-    self.add_mode("mixer2", [(self.control_surface.mixer, self._session_volume_layer)])
-    self.add_mode("device", [(self.control_surface.mixer, self._session_select_layer), 
+    self.add_mode("session", [(self.control_surface.mixer, self._session_volume_layer)])
+    self.add_mode("note", [(self.control_surface.mixer, self._session_select_layer), 
       LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
-    self.add_mode("mixer3", [(self.control_surface.mixer, self._session_volume_layer)])
+    self.add_mode("track", [(self.control_surface.mixer, self._session_select_layer), 
+      LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
+    self.add_mode("sequencer", [(self.control_surface.mixer, self._session_select_layer), 
+      LazyComponentMode(self._device_control), LazyComponentMode(self._detail_control)])
     self.selected_mode = 'mixer'
 
   def _device_control(self):

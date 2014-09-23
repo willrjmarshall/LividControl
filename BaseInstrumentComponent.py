@@ -1,4 +1,4 @@
-from Push.InstrumentComponent import InstrumentComponent
+from Push.InstrumentComponent import InstrumentComponent, InstrumentScalesComponent
 
 from _Framework.Util import recursive_map, index_if, forward_property, first
 from itertools import ifilter

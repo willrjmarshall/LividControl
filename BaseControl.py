@@ -7,6 +7,7 @@ from itertools import imap, chain, starmap, ifilter
 from contextlib import contextmanager
 
 from Push.GridResolution import GridResolution
+from Push.AutoArmComponent import AutoArmComponent
 
 from _Framework.ControlSurface import OptimizedControlSurface
 from _Framework.ComboElement import ComboElement
@@ -47,6 +48,7 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
       self._init_selects()
       self._init_faders()
       self._init_utility()
+      self._init_auto_arm()
       self._init_ppm()
       self._init_modes()
       self.set_pad_translations(PAD_TRANSLATIONS)
@@ -122,24 +124,28 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
 
   def _init_fader_modes(self):
     self._fader_modes = FaderModes()
-    self._fader_modes.layer = Layer(mixer_button = self._session_button,
-        mixer2_button = self._note_button,
-        mixer3_button = self._sequence_button,
-        device_button = self._device_button)
+    self._fader_modes.layer = Layer(
+        session_button = self._session_button,
+        note_button = self._note_button,
+        track_button = self._sequence_button,
+        sequencer_button = self._device_button)
 
   def _init_pad_modes(self):
     self._pad_modes = PadModes()
     self._pad_modes.layer = Layer(session_button = self._session_button, 
         note_button = self._note_button,
         track_button = self._device_button,
-        sequence_button = self._sequence_button)
+        sequencer_button = self._sequence_button)
 
   def _init_utility(self):
     self._utility_modes = UtilityModes(self)
     self._utility_modes.layer = Layer(session_button = self._session_button, 
         note_button = self._note_button,
-        device_button = self._device_button,
-        sequence_button = self._sequence_button)
+        track_button = self._device_button,
+        sequencer_button = self._sequence_button)
+
+  def _init_auto_arm(self):
+    self._auto_arm = AutoArmComponent(is_enabled = True)
 
   def _init_ppm(self):
     self._ppm = PPMeter(self, self.song().master_track, self._master_fader)
@@ -148,23 +154,14 @@ class BaseControl(OptimizedControlSurface, LCDDisplay):
   def _on_selected_track_changed(self):
     super(BaseControl, self)._on_selected_track_changed()
     self.reset_controlled_track()
-    self.schedule_message(1, self.arm_track_if_needed)
+    if self._auto_arm.needs_restore_auto_arm:
+      self.schedule_message(1, self._auto_arm.restore_auto_arm)
 
   @subject_slot('session_record')
   def _on_session_record_changed(self):
     status = self.song().session_record
     feedback_color = int(pad_skin()['Instrument.FeedbackRecord'] if status else pad_skin()['Instrument.Feedback'])
     self._c_instance.set_feedback_velocity(feedback_color)
-
-  def arm_track_if_needed(self):
-    track = self.song().view.selected_track
-    if track.has_midi_input and not track.arm:
-      self.unarm_tracks()
-      track.arm = 1
-
-  def unarm_tracks(self):
-    for track in self.song().tracks:
-      track.arm = 0
 
   def with_note(self, button):
     return ComboElement(button, modifiers=[self._note_button])
