@@ -23,9 +23,8 @@ class BaseSessionComponent(SessionComponent, BaseMessenger):
     self.set_mixer(self.control_surface.mixer)
     self.set_offsets(0, 2)
 
-
   def _create_session_layer(self, matrix):
-    return Layer(clip_launch_buttons=matrix,
+    return Layer(clip_launch_buttons=matrix.submatrix[:6, :4],
         track_bank_right_button = self.control_surface.with_session(self.utility_buttons[6]),
         track_bank_left_button = self.control_surface.with_session(self.utility_buttons[7]),
         stop_track_clip_buttons = self.control_surface.selects_with_session,

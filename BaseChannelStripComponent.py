@@ -1,5 +1,6 @@
 from _Framework.ChannelStripComponent import ChannelStripComponent
 from BaseMessenger import BaseMessenger
+from Utilities import set_channel
 
 class BaseChannelStripComponent(ChannelStripComponent, BaseMessenger):
   """ Calls reset on some buttons when they're assigned.
@@ -28,4 +29,9 @@ class BaseChannelStripComponent(ChannelStripComponent, BaseMessenger):
       button.reset()
       button.set_on_off_values('MixerButton.Mute', 'Button.Off')
     super(BaseChannelStripComponent, self).set_mute_button(button)
+    self.update()
+
+  def set_volume_control(self, control):
+    set_channel([control], 1)
+    super(BaseChannelStripComponent, self).set_volume_control(control)
     self.update()

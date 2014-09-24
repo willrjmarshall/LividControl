@@ -4,16 +4,17 @@ from _Framework.Util import recursive_map, index_if, forward_property, first
 from itertools import ifilter
 from functools import partial
 from MatrixMaps import NON_FEEDBACK_CHANNEL
+from BaseMessenger import BaseMessenger
 
-class BaseInstrumentComponent(InstrumentComponent):
-  """ Customized for hacks """
+class BaseInstrumentComponent(InstrumentComponent, BaseMessenger):
+  """ Some methods overriden for Base """
 
   def _setup_instrument_mode(self):
     if self.is_enabled() and self._matrix:
       self._matrix.reset()
       pattern = self._pattern
       
-      # This is incorrectly matrix.width() in Push script.
+      # This is incorrectly using matrix.width() in Push script.
       # Since it's an 8x8 grid things still work, but our
       # grid is 8x4 so it breaks
       max_j = self._matrix.height() - 1

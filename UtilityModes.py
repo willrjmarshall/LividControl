@@ -52,7 +52,10 @@ class UtilityModes(ModesComponent, BaseMessenger):
   def _theme_faders(self, mode_index):
     """ Change the fader colors to indicate mode """
     for index, fader in enumerate(self.control_surface.fader_elements):
-      if index < 3:
-        fader.set_theme(mode_colors[mode_index], "spread")
-      else:
+      if mode_index > 0:
         fader.set_theme(mode_colors[mode_index], "fill")
+      else:
+        if index < 4:
+          fader.set_theme(mode_colors[mode_index], "spread")
+        else:
+          fader.set_theme(mode_colors[::-1][mode_index], "fill")

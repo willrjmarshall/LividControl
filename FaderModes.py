@@ -16,7 +16,7 @@ class FaderModes(ModesComponent, BaseMessenger):
     self._init_mixer_layer()
     self.add_mode("session", self._mixer_mode())
     self.add_mode("note", [self._simple_mixer_mode(), self._device_mode()])
-    self.add_mode("track", [self._simple_mixer_mode(), self._device_mode()])
+    self.add_mode("track", [self._simple_mixer_mode(), self._device_mode(), self._detail_mode()])
     self.add_mode("sequencer", [self._simple_mixer_mode(), self._device_mode()])
     self.selected_mode = 'session'
 
@@ -30,8 +30,11 @@ class FaderModes(ModesComponent, BaseMessenger):
 
   def _device_mode(self):
     """ Device control and sundries """
-    return [LazyComponentMode(self._device_control), 
-           LazyComponentMode(self._detail_control)]
+    return LazyComponentMode(self._device_control)
+
+  def _detail_mode(self):
+    """ Navigation for device control """
+    return LazyComponentMode(self._detail_control)
 
   def _device_control(self):
     self._device_component = BaseDeviceComponent(name = 'Device_Component',

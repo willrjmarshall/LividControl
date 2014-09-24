@@ -8,6 +8,7 @@ from BaseInstrumentComponent import BaseInstrumentComponent
 from BaseMessenger import BaseMessenger
 from Map import *
 
+FIRST_NOTE = 35# 7 notes per octave, 5 octaves up from C-2 
 NOTES = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 
 class BaseMelodicComponent(MelodicComponent, BaseMessenger):
@@ -21,6 +22,7 @@ class BaseMelodicComponent(MelodicComponent, BaseMessenger):
         instrument_play_layer = self._create_instrument_layer())
     self._init_scales()
     self._instrument.__class__ = BaseInstrumentComponent
+    self._instrument.position = FIRST_NOTE 
     self._on_octave_changed.subject = self._instrument._slider._slideable
     self._on_notes_changed.subject = self._instrument
     self._on_selected_modus.subject = self._instrument.scales._modus_list.scrollable_list

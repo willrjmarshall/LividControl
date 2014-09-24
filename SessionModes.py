@@ -24,7 +24,7 @@ class SessionModes(BaseMessenger):
 
   def _create_session(self):
     """ Lazily evaluated the first time session mode is selected """
-    session = BaseSessionComponent(num_tracks = NUM_TRACKS, num_scenes = NUM_SCENES,
+    session = BaseSessionComponent(num_tracks = (NUM_TRACKS - 2), num_scenes = NUM_SCENES,
         matrix = self.control_surface.matrix)
     self.control_surface.set_highlighting_session_component(session)
     return session
